@@ -1,8 +1,10 @@
-﻿using AntiOllvm.analyze;
+﻿using System.Reflection.Emit;
+using AntiOllvm.analyze;
 using AntiOllvm.entity;
 using AntiOllvm.Extension;
 using AntiOllvm.Helper;
 using AntiOllvm.Logging;
+using OpCode = AntiOllvm.entity.OpCode;
 
 namespace AntiOllvm.Analyze;
 
@@ -47,6 +49,32 @@ public class Simulation
                 _mainDispatcher = block;
                 break;
             }
+        }
+
+        Label1:
+        int a = 100;
+        switch (a)
+        {
+            case 98:
+            {
+                //Logic 
+                a = 101;
+                goto Label1;
+            }
+            case 99:
+            {
+                //Logic 
+                a = 98;
+                goto Label1;
+            }
+            case 100:
+            {
+                //Logic 
+                a = 99;
+                goto Label1;
+            }
+            default:
+                break;
         }
 
         if (_mainDispatcher == null)
@@ -335,6 +363,7 @@ public class Simulation
             {
                 return mov;
             }
+
             return null;
         }
 
@@ -392,33 +421,27 @@ public class Simulation
                         block.CFF_CSEL = instruction;
                         Logger.InfoNewline(" Have  CFF_CSEL " + instruction);
                         var CSELAfterMove = IsCSELAfterMove(block, instruction);
-                        if (CSELAfterMove!=null)
+                        if (CSELAfterMove != null)
                         {
-                            Logger.InfoNewline("Update CSEL After Move  with left " + CSELAfterMove);
                             SyncLogicInstruction(CSELAfterMove);
                         }
                         var needOperandRegister = instruction.Operands()[0].registerName;
                         var operandLeft = instruction.Operands()[1].registerName;
                         var left = _regContext.GetRegister(operandLeft).GetLongValue();
                         _regContext.SetRegister(needOperandRegister, left);
-                        
                         var nextBlock = block.GetLinkedBlocks(this)[0];
                         var leftBlock = FindRealBlock(nextBlock);
-                        Logger.InfoNewline("leftBlock " + leftBlock.start_address + " block is  \n " + block);
                         list.Add(leftBlock);
-                        Logger.InfoNewline("Start Find Right Block " + block.start_address);
                         _regContext.RestoreRegisters(block.start_address);
                         var operandRight = instruction.Operands()[2].registerName;
                         var right = _regContext.GetRegister(operandRight).GetLongValue();
                         _regContext.SetRegister(needOperandRegister, right);
-                        if (CSELAfterMove!=null)
+                        if (CSELAfterMove != null)
                         {
-                            Logger.InfoNewline("Update CSEL After Move  with right " + CSELAfterMove);
                             SyncLogicInstruction(CSELAfterMove);
                         }
                         var rightBlock = FindRealBlock(nextBlock);
                         list.Add(rightBlock);
-                        Logger.InfoNewline("rightBlock " + rightBlock.start_address + " block is  \n " + block);
                     }
 
                     break;
