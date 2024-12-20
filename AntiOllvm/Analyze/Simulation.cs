@@ -50,33 +50,6 @@ public class Simulation
                 break;
             }
         }
-
-        Label1:
-        int a = 100;
-        switch (a)
-        {
-            case 98:
-            {
-                //Logic 
-                a = 101;
-                goto Label1;
-            }
-            case 99:
-            {
-                //Logic 
-                a = 98;
-                goto Label1;
-            }
-            case 100:
-            {
-                //Logic 
-                a = 99;
-                goto Label1;
-            }
-            default:
-                break;
-        }
-
         if (_mainDispatcher == null)
         {
             throw new Exception(" Main dispatcher not found");
