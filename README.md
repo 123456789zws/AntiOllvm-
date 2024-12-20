@@ -1,4 +1,6 @@
 ## AntiOllvm
+### Introduction
+#### This is an Arm64-based symbolic execution framework designed to remove OLLVM's flattening obfuscation. By identifying specific patterns, it can reconstruct the complete set of if-else branches.
 ### How to Use 
 #### 1. Get the CFG info from the IDA python script
 ```python
