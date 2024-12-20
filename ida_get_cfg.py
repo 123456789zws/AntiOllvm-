@@ -92,8 +92,8 @@ def export_cfg(func_addr):
 
 
 def main():
-    # 这里直接指定你已经知道的函数地址
-    func_addr = 0x181c6c  # 替换为你指定的函数地址（十六进制）
+    # choose your function address
+    func_addr = 0x181c6c  # replace with your function address
 
     # 确保函数地址有效
     func = idaapi.get_func(func_addr)
@@ -106,21 +106,19 @@ def main():
     # 获取函数结束地址
     func_end = func.end_ea
 
-    # 将函数结束地址和控制流图信息放在同级结构中
     result_data = {
         "function_start": hex(func_addr),
         "function_end": hex(func_end),
         "cfg": cfg
     }
-    # 将控制流图信息保存为 JSON 文件
-    # 为了确保文件路径正确，建议使用 IDA 的当前工作目录
+   
     output_file = "C:/Users/PC5000/PycharmProjects/py_ida/cfg_output_" + hex(func_addr) + ".json"
     try:
         with open(output_file, 'w') as json_file:
             json.dump(result_data, json_file, indent=4)
-        print(f"控制流图信息已保存到 {output_file}")
+        print(f"CFG is save to {output_file}")
     except Exception as e:
-        print(f"保存 JSON 文件时出错: {e}")
+        print(f"save JSON file Error: {e}")
 
 
 if __name__ == "__main__":
