@@ -22,7 +22,7 @@
 ```
 #####   if you see '[INFO] Program: FixJson OutPath is E:\RiderDemo\AntiOllvm\AntiOllvm\bin\Release\net8.0\fix.json' in the console, it means the fix.json is generated successfully.
 
-#### 3. run gen_machine_code.py
+#### 3. Run gen_machine_code.py
 ```python
   warning! this is python script with keystone-engine, you need to install keystone-engine first.
   pip install keystone
@@ -33,7 +33,7 @@
   # now run gen_machine_code.py
   python gen_machine_code.py
 ```
-#### 4. rebuild cfg in IDA
+#### 4. Rebuild cfg in IDA
 ```python
 
     # run the script
