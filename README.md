@@ -49,6 +49,6 @@ git clone  https://github.com/IIIImmmyyy/AntiOllvm.git
 Use Rider or Visual Studio to open the project and build it.
 ```
 
-
+#### if you are chinese ,you can learn more from https://bbs.kanxue.com/thread-284890.htm
 
 
