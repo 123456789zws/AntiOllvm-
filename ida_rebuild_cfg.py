@@ -12,7 +12,6 @@ else:
     # 读取并解析 JSON 文件
     with open(json_file_path, "r") as json_file:
         data = json.load(json_file)
-    # 初始化 Keystone 引擎（假设目标架构为 ARM64）
 
 
     # 遍历每一个补丁项
