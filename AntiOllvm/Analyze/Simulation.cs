@@ -50,33 +50,6 @@ public class Simulation
                 break;
             }
         }
-
-        Label1:
-        int a = 100;
-        switch (a)
-        {
-            case 98:
-            {
-                //Logic 
-                a = 101;
-                goto Label1;
-            }
-            case 99:
-            {
-                //Logic 
-                a = 98;
-                goto Label1;
-            }
-            case 100:
-            {
-                //Logic 
-                a = 99;
-                goto Label1;
-            }
-            default:
-                break;
-        }
-
         if (_mainDispatcher == null)
         {
             throw new Exception(" Main dispatcher not found");
@@ -168,6 +141,9 @@ public class Simulation
         }
 
         File.WriteAllText(_outJsonPath, JsonHelper.ToString(fixInstructions));
+        
+        Logger.InfoNewline("All Instruction is Fix Done Count is "+fixInstructions.Count);
+        Logger.InfoNewline("FixJson OutPath is " + _outJsonPath);
     }
 
     private void FixMainDispatcher(List<Instruction> fixInstructions)
@@ -239,55 +215,7 @@ public class Simulation
         }
 
         throw new Exception("is unknown block \n" + block);
-        // if (_analyzer.IsRealBlock(block, _mainDispatcher, _regContext))
-        // {
-        //     if (_analyzer.IsRealBlockWithDispatchNextBlock(block, _mainDispatcher, _regContext, this))
-        //     {
-        //         if (block.IsChangeDispatchRegisterInRealBlock(_mainDispatcher))
-        //         {
-        //             //loc_181E90
-        //             // LDR             Q0, [X26]
-        //             // MOV             X0, SP  ; a1
-        //             // MOV             W1, #0x11 ; a2
-        //             // STRB            W25, [SP,#0x70+var_60]
-        //             // STR             Q0, [SP,#0x70+var_70]
-        //             // BL              get_f_parser_encrypt_str
-        //             // MOV             W8, #0x16CE
-        //             // MOV             X4, X0
-        //             // STR             X0, [X22,#qword_7289F8@PAGEOFF]
-        //             // MOVK            W8, #0x8FEA,LSL#16
-        //             // B               loc_181E64
-        //             // such like this block is has next block and write to dispatch register we need sync register
-        //
-        //             SyncLogicBlock(block);
-        //         }
-        //
-        //         block.RealChilds = GetAllChildBlock(block);
-        //
-        //
-        //         return block;
-        //     }
-        //     
-        //     if (block.LinkBlocks.Count > 0)
-        //     {
-        //        
-        //         var linkedBlocks = block.GetLinkedBlocks(this);
-        //         Logger.InfoNewline("Find Real Block " + block.start_address + " or B block " + block + " linked size " +
-        //                            linkedBlocks.Count);
-        //         foreach (var linked in linkedBlocks)
-        //         {
-        //             FindRealBlock(linked);
-        //         }
-        //         block.RealChilds = linkedBlocks;
-        //         return block;
-        //     }
-        //
-        //     Logger.ErrorNewline("Real block not has child block");
-        //     return block;
-        //
-        // }
-
-        return null;
+      
     }
 
     private void SyncLogicInstruction(Instruction instruction)
@@ -560,135 +488,7 @@ public class Simulation
 
         return list;
     }
-
-    private List<Block> GetAllChildBlock(Block block)
-    {
-        if (block.isFind)
-        {
-            return block.RealChilds;
-        }
-
-
-        var list = new List<Block>();
-
-        if (block.IsEndJumpToMainDispatch(_mainDispatcher))
-        {
-            // SUCH AS 
-            // LDR             W8, [SP,#0x2D0+var_28C]
-            // CMP             W8, #0x1B
-            // MOV             W8, #0xE951FA97
-            // CSEL            W8, W25, W8, EQ
-            // B               loc_15E510
-            var ins = block.GetCFF_CSEL_Expression(_mainDispatcher, _regContext);
-            if (ins != null)
-            {
-                _regContext.SnapshotRegisters(block.start_address);
-                block.CFF_CSEL = ins;
-                Logger.InfoNewline(" IsEndJumpToMainDispatch CFF_CSEL " + ins);
-                var needOperandRegister = ins.Operands()[0].registerName;
-                var operandLeft = ins.Operands()[1].registerName;
-                var left = _regContext.GetRegister(operandLeft).GetLongValue();
-                _regContext.SetRegister(needOperandRegister, left);
-                var leftBlock = FindRealBlock(RunDispatchBlock(_mainDispatcher));
-                Logger.InfoNewline("leftBlock " + leftBlock.start_address + " block is  \n " + block);
-                list.Add(leftBlock);
-                Logger.InfoNewline("Start Find Right Block " + block.start_address);
-                _regContext.RestoreRegisters(block.start_address);
-                var operandRight = ins.Operands()[2].registerName;
-                var right = _regContext.GetRegister(operandRight).GetLongValue();
-                _regContext.SetRegister(needOperandRegister, right);
-                var rightBlock = FindRealBlock(RunDispatchBlock(_mainDispatcher));
-                list.Add(rightBlock);
-                Logger.InfoNewline("rightBlock " + rightBlock.start_address + " block is  \n " + block);
-                //Check CSEL execute  after have MOVE Register?
-                var CSELIndex = block.FindIndex(ins);
-                //CMP             X8, #0x10
-                // CSEL            W8, W22, W21, LT
-                // MOVK            W10, #0x186A,LSL#16
-                // B               loc_15E510
-                // if CSEL is not the end branch we need to check the next block
-                var isMoveImmToReg = block.CheckCESLAfterMove(CSELIndex, this);
-                if (isMoveImmToReg)
-                {
-                    var find = FindRealBlock(RunDispatchBlock(_mainDispatcher));
-                    Logger.WarnNewline(" Find CESL Fix Link Block " + find.start_address + " block is  \n " + block);
-                    block.FixLinkBlock = find;
-                }
-            }
-            else
-            {
-                //is end Jump To MainDispatch but not has CFF_CSEL Just Link to MainDispatch
-                // loc_15ED44
-                // STR             X8, [SP,#0x2D0+var_258]
-                // MOV             W8, #0xD9210058
-                // B               loc_15E510
-                Logger.InfoNewline("is end Jump To MainDispatch but not has CFF_CSEL Just Link to MainDispatch \n" +
-                                   block);
-                var realBlock = FindRealBlock(RunDispatchBlock(_mainDispatcher));
-                Logger.InfoNewline("block  " + block.start_address + " is Find RealBlock  \n" + realBlock);
-                list.Add(realBlock);
-            }
-        }
-        else
-        {
-            //it's not end Jump To MainDispatch 
-
-            if (block.LinkBlocks.Count == 0)
-            {
-                //Empty Block it's end
-                return list;
-            }
-
-            //it's have CESL? 
-            var ins = block.GetCFF_CSEL_Expression(_mainDispatcher, _regContext);
-            if (ins != null)
-            {
-                var linkBlock = block.GetLinkedBlocks(this)[0];
-                if (_analyzer.IsChildDispatcher(linkBlock, _mainDispatcher, _regContext))
-                {
-                    Logger.InfoNewline(" not end Jump To MainDispatch  block  " + block.start_address +
-                                       " is Find CFF_CSEL  \n" + ins);
-
-
-                    _regContext.SnapshotRegisters(block.start_address);
-                    block.CFF_CSEL = ins;
-                    Logger.InfoNewline("Not Jump To Main CFF_CSEL " + ins);
-                    var needOperandRegister = ins.Operands()[0].registerName;
-                    var operandLeft = ins.Operands()[1].registerName;
-                    var left = _regContext.GetRegister(operandLeft).GetLongValue();
-                    _regContext.SetRegister(needOperandRegister, left);
-                    var leftBlock = FindRealBlock(linkBlock);
-                    Logger.WarnNewline(" Not Jump To Main leftBlock " + leftBlock.start_address + " block is  \n " +
-                                       block);
-                    list.Add(leftBlock);
-                    Logger.WarnNewline(" Not Jump To Main Start Find Right Block " + block.start_address);
-                    _regContext.RestoreRegisters(block.start_address);
-                    var operandRight = ins.Operands()[2].registerName;
-                    var right = _regContext.GetRegister(operandRight).GetLongValue();
-                    _regContext.SetRegister(needOperandRegister, right);
-                    var rightBlock = FindRealBlock(linkBlock);
-                    list.Add(rightBlock);
-                    Logger.WarnNewline("Not Jump To Main rightBlock " + rightBlock.start_address + " block is  \n " +
-                                       block);
-                }
-            }
-            else
-            {
-                Logger.InfoNewline("Is Link Block " + block.start_address);
-                foreach (var linkBlock in block.GetLinkedBlocks(this))
-                {
-                    var realBlock = FindRealBlock(linkBlock);
-                    Logger.InfoNewline(
-                        $"  s Link Block   {block.start_address} is Find Child Block {realBlock.start_address} Realblock =  {realBlock}");
-                    list.Add(realBlock);
-                }
-            }
-        }
-
-        return list;
-    }
-
-
+    
     private Block RunDispatchBlock(Block block)
     {
         foreach (var instruction in block.instructions)

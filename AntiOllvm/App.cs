@@ -1,17 +1,26 @@
 ﻿using AntiOllvm.Analyze;
 using AntiOllvm.Analyze.Type;
+using AntiOllvm.Helper;
+using AntiOllvm.Logging;
 
 namespace AntiOllvm;
 
 public class App
 {
-
-    public static void Init()
+    public static void Init(Config config)
     {
-        var readAllText = File.ReadAllText(@"E:\RiderDemo\AntiOllvm\AntiOllvm\cfg_output_0x181c6c.json");
-        Simulation simulation = new(readAllText, @"E:\RiderDemo\AntiOllvm\AntiOllvm\fix.json");
+        if (config == null)
+        {
+            Logger.ErrorNewline("config is null");
+            return;
+        }
+
+    
+        var readAllText = File.ReadAllText(config.ida_cfg_path);
+        
+      
+        Simulation simulation = new(readAllText, config.fix_outpath);
         simulation.SetAnalyze(new CFFAnalyer());
         simulation.Run();
-        
     }
 }

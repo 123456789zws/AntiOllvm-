@@ -4,7 +4,7 @@ import ida_bytes
 import idaapi
 import ida_kernwin
 # 选择 JSON 文件
-json_file_path = ida_kernwin.ask_file(0, "*.json", "请选择 JSON 文件")
+json_file_path = ida_kernwin.ask_file(0, "*.json", "please choose fix.json when gen_machine_code.py is executed")
 
 if not json_file_path:
     print("未选择文件，脚本退出。")
@@ -12,7 +12,6 @@ else:
     # 读取并解析 JSON 文件
     with open(json_file_path, "r") as json_file:
         data = json.load(json_file)
-    # 初始化 Keystone 引擎（假设目标架构为 ARM64）
 
 
     # 遍历每一个补丁项
