@@ -7,7 +7,7 @@ import ida_kernwin
 json_file_path = ida_kernwin.ask_file(0, "*.json", "please choose fix.json when gen_machine_code.py is executed")
 
 if not json_file_path:
-    print("未选择文件，脚本退出。")
+    print("no json file selected")
 else:
     # 读取并解析 JSON 文件
     with open(json_file_path, "r") as json_file:
@@ -20,14 +20,14 @@ else:
         fix_code_bytes_str = item.get("fix_machine_code_bytes")
 
         if not addr_str or not fix_code_bytes_str:
-            print(f"跳过无效项: {item}")
+            print(f"jump : {item}")
             continue
 
         try:
             # 将地址字符串转换为整数
             addr = int(addr_str, 16)
         except ValueError:
-            print(f"无效的地址格式: {addr_str}")
+            print(f"error address: {addr_str}")
             continue
 
         try:
@@ -53,4 +53,4 @@ else:
 
     # 刷新 IDA 的显示
     idaapi.refresh_idaview_anyway()
-    print("补丁操作完成。")
+    print("patch success ")

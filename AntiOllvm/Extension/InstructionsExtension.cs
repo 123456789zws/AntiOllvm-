@@ -49,6 +49,15 @@ public static class InstructionsExtension
 
         return false;
     }
+    public static bool HasConditionJump(this Instruction instruction)
+    {
+        if (instruction.mnemonic.StartsWith("B."))
+        {
+            return true;
+        }
+
+        return false;
+    }
     public static bool IsOperandDispatchRegister(this Instruction instruction,Block mainDispatch,RegisterContext regContext)
     {
         var mainCompareName = mainDispatch.GetMainDispatchOperandRegisterName();
@@ -77,7 +86,10 @@ public static class InstructionsExtension
         }
 
         return mnemonic switch
-        {
+        {   
+           
+            "ADC" => OpCode.ADC,
+            "ADCS"=> OpCode.ADCS,
             "ADRL" => OpCode.ADRL,
             "ADRP" => OpCode.ADRP,
             "LDP" => OpCode.LDP,
@@ -116,6 +128,7 @@ public static class InstructionsExtension
             "NOP"   => OpCode.NOP,
             "CMN"   => OpCode.CMN,
             "SUBS" => OpCode.SUBS,
+            "MULT" => OpCode.MULT,
             _ => throw new Exception("Unknown mnemonic: " + mnemonic)
         };
     }

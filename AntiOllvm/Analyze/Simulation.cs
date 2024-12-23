@@ -44,12 +44,13 @@ public class Simulation
         //在初始化寄存器时需要先定位主分发器 
         foreach (var block in _blocks)
         {
-            if (_analyzer.IsMainDispatcher(block, _regContext, _blocks))
+            if (_analyzer.IsMainDispatcher(block, _regContext, _blocks, this))
             {
                 _mainDispatcher = block;
                 break;
             }
         }
+
         if (_mainDispatcher == null)
         {
             throw new Exception(" Main dispatcher not found");
@@ -79,6 +80,7 @@ public class Simulation
             }
         }
 
+        _analyzer.InitAfterRegisterAssign(_regContext, _mainDispatcher, _blocks, this);
         LogRegisters();
         AnalyzeInstruction();
     }
@@ -115,7 +117,6 @@ public class Simulation
         FixChildDispatcher(fixInstructions);
         Logger.InfoNewline("Child Dispatcher Count " + _childDispatcherBlocks.Count
                                                      + "RealBlock Fix Start " + fixInstructions.Count);
-        ;
         // GetAllFixInstruction(block, ref fixInstructions);
 
         foreach (var realBlock in _realBlocks)
@@ -141,9 +142,9 @@ public class Simulation
         }
 
         File.WriteAllText(_outJsonPath, JsonHelper.ToString(fixInstructions));
-        
-        Logger.InfoNewline("All Instruction is Fix Done Count is "+fixInstructions.Count);
-        Logger.InfoNewline("FixJson OutPath is " + _outJsonPath);
+
+        OutLogger.InfoNewline("All Instruction is Fix Done Count is " + fixInstructions.Count);
+        OutLogger.InfoNewline("FixJson OutPath is " + _outJsonPath);
     }
 
     private void FixMainDispatcher(List<Instruction> fixInstructions)
@@ -166,25 +167,10 @@ public class Simulation
         }
     }
 
-    private void GetAllFixInstruction(Block block, ref List<Instruction> fixInstructions)
-    {
-        foreach (var instruction in block.instructions)
-        {
-            if (!string.IsNullOrEmpty(instruction.fixmachine_code)
-                || !string.IsNullOrEmpty(instruction.fixmachine_byteCode))
-            {
-                if (!fixInstructions.Contains(instruction))
-                {
-                    fixInstructions.Add(instruction);
-                }
-            }
-        }
-    }
-
 
     private Block FindRealBlock(Block block)
     {
-        if (_analyzer.IsMainDispatcher(block, _regContext, _blocks))
+        if (_analyzer.IsMainDispatcher(block, _regContext, _blocks, this))
         {
             var next = RunDispatchBlock(block);
             return FindRealBlock(next);
@@ -215,7 +201,6 @@ public class Simulation
         }
 
         throw new Exception("is unknown block \n" + block);
-      
     }
 
     private void SyncLogicInstruction(Instruction instruction)
@@ -273,7 +258,7 @@ public class Simulation
         bool IsDispatch = false;
         if (link.Count == 1)
         {
-            if (_analyzer.IsMainDispatcher(link[0], _regContext, _blocks))
+            if (_analyzer.IsMainDispatcher(link[0], _regContext, _blocks, this))
             {
                 IsDispatch = true;
             }
@@ -313,11 +298,6 @@ public class Simulation
         bool IsUpdateDispatch = false;
         bool jumpB = false;
         bool CESLAfterMoveOpreand = false;
-        if (_analyzer.IsRealBlockWithDispatchNextBlock(block, _mainDispatcher, _regContext, this))
-        {
-            SyncLogicBlock(block);
-        }
-
         foreach (var instruction in block.instructions)
         {
             switch (instruction.Opcode())
@@ -340,8 +320,7 @@ public class Simulation
                 }
                 case OpCode.CSEL:
                 {
-                    //CSEL            W8, W25, W8, EQ
-                    if (instruction.IsOperandDispatchRegister(_mainDispatcher, _regContext))
+                    if (_analyzer.IsOperandDispatchRegister(instruction, _mainDispatcher, _regContext))
                     {
                         CFF_CSEL = instruction;
                         HasCFF_CSEL = true;
@@ -353,6 +332,7 @@ public class Simulation
                         {
                             SyncLogicInstruction(CSELAfterMove);
                         }
+
                         var needOperandRegister = instruction.Operands()[0].registerName;
                         var operandLeft = instruction.Operands()[1].registerName;
                         var left = _regContext.GetRegister(operandLeft).GetLongValue();
@@ -368,9 +348,11 @@ public class Simulation
                         {
                             SyncLogicInstruction(CSELAfterMove);
                         }
+
                         var rightBlock = FindRealBlock(nextBlock);
                         list.Add(rightBlock);
                     }
+
 
                     break;
                 }
@@ -488,7 +470,7 @@ public class Simulation
 
         return list;
     }
-    
+
     private Block RunDispatchBlock(Block block)
     {
         foreach (var instruction in block.instructions)
@@ -502,6 +484,17 @@ public class Simulation
                     Logger.InfoNewline("MOV " + instruction.Operands()[0].registerName + " = " +
                                        instruction.Operands()[1].immediateValue + " in DispatchBlock ============");
                     break;
+                }
+                case OpCode.B:
+                {
+                    var addr = instruction.GetRelativeAddress();
+                    var nextBlock = FindBlockByAddress(addr);
+                    if (block.IsChildBlock(nextBlock))
+                    {
+                        return nextBlock;
+                    }
+
+                    throw new Exception(" B " + instruction + " is not in " + block);
                 }
                 case OpCode.CMP:
                 {

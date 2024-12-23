@@ -20,7 +20,7 @@ public class App
         
       
         Simulation simulation = new(readAllText, config.fix_outpath);
-        simulation.SetAnalyze(new CFFAnalyer());
+        simulation.SetAnalyze(new CFFAnalyer(config));
         simulation.Run();
     }
 }

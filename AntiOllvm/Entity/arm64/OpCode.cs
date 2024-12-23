@@ -1,8 +1,9 @@
 ﻿namespace AntiOllvm.entity;
 
 public enum OpCode
-{
-    NONE,
+{   
+    ADC,
+    ADCS,
     MOV,
     MOVK,
     CMP,
@@ -42,4 +43,6 @@ public enum OpCode
     NOP,
     CMN,
     SUBS,
+    MULT,
+    NONE,
 }
