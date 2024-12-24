@@ -33,7 +33,7 @@
             WarningLog(message, source);
         }
 
-        public static void ErrorNewline(string message, string source = "Program") =>
+        public static void RedNewline(string message, string source = "Program") =>
             Error($"{message}{Environment.NewLine}", source);
 
         public static void Error(string message, string source = "Program")

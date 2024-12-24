@@ -42,6 +42,7 @@ public class Simulation
     public void Run()
     {
         //在初始化寄存器时需要先定位主分发器 
+        _analyzer.Init(_blocks, this);
         foreach (var block in _blocks)
         {
             if (_analyzer.IsMainDispatcher(block, _regContext, _blocks, this))
@@ -97,7 +98,7 @@ public class Simulation
 
 
         var block = FindRealBlock(nextBlock);
-        Logger.ErrorNewline("=========================================================\n" +
+        Logger.RedNewline("=========================================================\n" +
                             "=========================================================");
         Logger.InfoNewline("Start Fix ReadBlock Count is  " + _realBlocks.Count);
         foreach (var realBlock in _realBlocks)
@@ -161,8 +162,15 @@ public class Simulation
         {
             foreach (var instruction in block.instructions)
             {
-                instruction.fixmachine_code = "NOP";
-                fixInstructions.Add(instruction);
+                if (string.IsNullOrEmpty(instruction.fixmachine_code))
+                {
+                    instruction.fixmachine_code = "NOP";
+                    fixInstructions.Add(instruction);
+                }
+                else
+                {
+                    fixInstructions.Add(instruction);
+                }
             }
         }
     }
@@ -190,7 +198,7 @@ public class Simulation
 
         if (_analyzer.IsRealBlock(block, _mainDispatcher, _regContext))
         {
-            Logger.WarnNewline("Find Real Block \n" + block);
+            
             block.RealChilds = GetAllChildBlockNew(block);
             if (!_realBlocks.Contains(block))
             {
@@ -218,7 +226,7 @@ public class Simulation
                     var register = GetRegister(left.registerName);
                     var imm = right.immediateValue;
                     register.value = imm;
-                    Logger.ErrorNewline($"Update  MOV {left.registerName} = {imm} ({imm:X})");
+                    Logger.RedNewline($"Update  MOV {left.registerName} = {imm} ({imm:X})");
                 }
 
                 break;
@@ -298,6 +306,8 @@ public class Simulation
         bool IsUpdateDispatch = false;
         bool jumpB = false;
         bool CESLAfterMoveOpreand = false;
+        var isRealBlockDispatcherNext= _analyzer.IsRealBlockWithDispatchNextBlock(block, _mainDispatcher, _regContext, this);
+        Logger.WarnNewline("Find Real Block isRealBlockDispatcherNext   "+isRealBlockDispatcherNext + "  \n" + block);
         foreach (var instruction in block.instructions)
         {
             switch (instruction.Opcode())
@@ -307,6 +317,7 @@ public class Simulation
                 {
                     if (_analyzer.IsRealBlockWithDispatchNextBlock(block, _mainDispatcher, _regContext, this))
                     {
+                        
                         SyncLogicInstruction(instruction);
                         IsUpdateDispatch = true;
                     }
@@ -320,7 +331,7 @@ public class Simulation
                 }
                 case OpCode.CSEL:
                 {
-                    if (_analyzer.IsOperandDispatchRegister(instruction, _mainDispatcher, _regContext))
+                    if (_analyzer.IsCSELOperandDispatchRegister(instruction, _mainDispatcher, _regContext))
                     {
                         CFF_CSEL = instruction;
                         HasCFF_CSEL = true;
@@ -339,10 +350,14 @@ public class Simulation
                         _regContext.SetRegister(needOperandRegister, left);
                         var nextBlock = block.GetLinkedBlocks(this)[0];
                         var leftBlock = FindRealBlock(nextBlock);
+                        Logger.InfoNewline("Block "+block.start_address+" Left  is Link To  \n"+leftBlock
+                        +"LEFT Imm is "+left);
                         list.Add(leftBlock);
                         _regContext.RestoreRegisters(block.start_address);
                         var operandRight = instruction.Operands()[2].registerName;
                         var right = _regContext.GetRegister(operandRight).GetLongValue();
+                        Logger.InfoNewline("Block "+block.start_address+" Right  is Link To  \n"+leftBlock
+                        +"Right Imm is "+right);
                         _regContext.SetRegister(needOperandRegister, right);
                         if (CSELAfterMove != null)
                         {
@@ -351,6 +366,10 @@ public class Simulation
 
                         var rightBlock = FindRealBlock(nextBlock);
                         list.Add(rightBlock);
+                        if (block.GetStartAddress()==0x17f760)
+                        {
+                                Logger.InfoNewline("============");
+                        }
                     }
 
 
@@ -386,7 +405,7 @@ public class Simulation
 
                         var nextBlock = block.GetLinkedBlocks(this)[0];
                         var realBlock = FindRealBlock(nextBlock);
-                        Logger.ErrorNewline("CESLAfterMoveOpreand  block  " + block.start_address + " is Link To   \n" +
+                        Logger.RedNewline("CESLAfterMoveOpreand  block  " + block.start_address + " is Link To   \n" +
                                             realBlock);
                         list.Add(realBlock);
                         break;
@@ -413,7 +432,7 @@ public class Simulation
 
                         var nextBlock = block.GetLinkedBlocks(this)[0];
                         var realBlock = FindRealBlock(nextBlock);
-                        Logger.ErrorNewline("Update Dispatch  block  " + block.start_address + " is Link To   \n" +
+                        Logger.RedNewline("Update Dispatch  block  " + block.start_address + " is Link To   \n" +
                                             realBlock);
                         list.Add(realBlock);
                         break;
@@ -425,12 +444,12 @@ public class Simulation
                         // 0x15ed28   B loc_15F19C
                         //Fix this case
                         Logger.InfoNewline("is Only one instruction Block \n" + block);
-                        list.AddRange(block.GetLinkedBlocks(this));
+                        list.Add(FindRealBlock(block.GetLinkedBlocks(this)[0]));
                         break;
                     }
 
                     //not Update Dispatch just link next block we need loop this block when this bransh end
-                    Logger.ErrorNewline(" is not Update Dispatch just link next block " + instruction
+                    Logger.RedNewline(" is not Update Dispatch just link next block  linkCount  " + links.Count 
                         + " block is \n" + block);
                     foreach (var link in links)
                     {
@@ -443,7 +462,12 @@ public class Simulation
                 }
             }
         }
-
+        
+        if (IsUpdateDispatch && jumpB)
+        {   
+            return list;
+        }
+        
         if (IsUpdateDispatch && !jumpB)
         {
             // LDR             X9, [SP,#0x2D0+var_2B0]
@@ -463,10 +487,28 @@ public class Simulation
 
             var nextBlock = block.GetLinkedBlocks(this)[0];
             var realBlock = FindRealBlock(nextBlock);
-            Logger.ErrorNewline($"Not B Ins Find Block {block.start_address} Link To {realBlock.start_address}");
+            Logger.RedNewline($"Not B Ins Find Block {block.start_address} Link To {realBlock.start_address}");
             list.Add(realBlock);
         }
+        else
+        {
+            var links = block.GetLinkedBlocks(this);
+            if (links.Count != 1)
+            {
+                Logger.InfoNewline("is normal Block " + block.start_address + " Link Count is " + links.Count);
+                list.AddRange(links);
+                return list;
+            }
 
+            if (!jumpB)
+            {
+                Logger.InfoNewline("Block " + block.start_address + " is not Update Dispatch and not have B  isUpdateDispatch " +
+                                   IsUpdateDispatch + "  jumpB " + jumpB);
+                var nextBlock = block.GetLinkedBlocks(this)[0];
+                var realBlock = FindRealBlock(nextBlock);
+                list.Add(realBlock);
+            }
+        }
 
         return list;
     }
@@ -535,6 +577,12 @@ public class Simulation
             }
         }
 
+        if (block.instructions.Count==1)
+        {
+            //Fix only MOV instruction Block
+            var nextBlock =block.GetLinkedBlocks(this)[0];
+            return nextBlock;
+        }
         return null;
     }
 
@@ -577,7 +625,7 @@ public class Simulation
                     var register = GetRegister(left.registerName);
                     var imm = right.immediateValue;
                     register.value = imm;
-                    Logger.ErrorNewline($"AssignRegisterByInstruction MOV {left.registerName} = {imm} ({imm:X})");
+                    Logger.RedNewline($"AssignRegisterByInstruction MOV {left.registerName} = {imm} ({imm:X})");
                 }
             }
                 break;
@@ -593,5 +641,15 @@ public class Simulation
                 break;
             }
         }
+    }
+
+    public bool IsChildDispatcher(Block link)
+    {
+        return _childDispatcherBlocks.Contains(link);
+    }
+
+    public bool IsMainDispatcher(Block link)
+    {
+        return link.Equals(_mainDispatcher);
     }
 }

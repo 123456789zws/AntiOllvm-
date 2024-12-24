@@ -179,7 +179,7 @@ public static class MainDispatchFinder
         var link = initDispatcherBlock.GetLinkedBlocks(simulation);
         if (link.Count != 1)
         {
-            Logger.ErrorNewline(
+            Logger.RedNewline(
                 " SmartFindMainDispatcher error : can't find main dispatcher you must find in other way");
             return null;
         }

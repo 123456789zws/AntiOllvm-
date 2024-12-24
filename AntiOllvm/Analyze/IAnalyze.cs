@@ -9,7 +9,18 @@ public interface IAnalyze
     public bool IsMainDispatcher(Block block, RegisterContext context, List<Block> allBlocks, Simulation simulation);
     public bool IsChildDispatcher(Block curBlock, Block mainBlock, RegisterContext registerContext);
     public bool IsRealBlock(Block block, Block mainBlock, RegisterContext context);
-
+    /**
+     * we need the right time to sync the block
+     */
     bool IsRealBlockWithDispatchNextBlock(Block block, Block mainDispatcher, RegisterContext regContext, Simulation simulation);
-    bool IsOperandDispatchRegister(Instruction instruction, Block mainDispatcher, RegisterContext regContext);
+    bool IsCSELOperandDispatchRegister(Instruction instruction, Block mainDispatcher, RegisterContext regContext);
+    /**
+     * When framework init, this method will be called
+     */
+    void Init(List<Block> blocks,Simulation simulation);
+    
+    /**
+     *  if function is have multiple dispatcher, we need to know the operand register name
+     */
+    List<string> GetDispatcherOperandRegisterNames();
 }

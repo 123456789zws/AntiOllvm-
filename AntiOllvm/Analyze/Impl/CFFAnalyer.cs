@@ -224,7 +224,7 @@ public class CFFAnalyer : IAnalyze
         return false;
     }
 
-    public bool IsOperandDispatchRegister(Instruction instruction, Block mainDispatcher, RegisterContext regContext)
+    public bool IsCSELOperandDispatchRegister(Instruction instruction, Block mainDispatcher, RegisterContext regContext)
     {
         var mainCompareName = mainDispatcher.GetMainDispatchOperandRegisterName();
         var first = instruction.Operands()[0].registerName;
@@ -242,5 +242,15 @@ public class CFFAnalyer : IAnalyze
         }
 
         return false;
+    }
+
+    public void Init(List<Block> blocks, Simulation simulation)
+    {
+        
+    }
+
+    public List<string> GetDispatcherOperandRegisterNames()
+    {
+        return _childOperandRegisterNames;
     }
 }

@@ -125,7 +125,7 @@ public static class BlockExtension
         }
     }
 
-    private static int FindOperandDispatchInstructionIndex(this Block block, Block main)
+    private static int FindOperandDispatchInstructionIndex(this Block block, Simulation simulation)
     {
         for (int i = 0; i < block.instructions.Count(); i++)
         {
@@ -134,7 +134,7 @@ public static class BlockExtension
             {
                 var first = instruction.Operands()[0];
                 var second = instruction.Operands()[1];
-                if (first.registerName == main.GetMainDispatchOperandRegisterName() &&
+                if (simulation.Analyzer.GetDispatcherOperandRegisterNames().Contains(first.registerName)&&
                     second.kind == Arm64OperandKind.Immediate)
                 {
                     var l = second.immediateValue;
@@ -190,46 +190,74 @@ public static class BlockExtension
         return false;
     }
 
-    private static bool IsJumpToDispatcherButNotWithBIns(this Block block, Block main, Simulation simulation)
+    private static bool CheckRealBlockUseNextBlockJumpByOneIns(this Block block, Simulation simulation)
     {
-       var ins=  block.instructions[^1];
-       if (ins.Opcode()!=OpCode.B)
-       {
-           return true;
-       }
-       return false;
-    }
-    private static bool IsJumpToDispatcher(this Block block, Block main, Simulation simulation)
-    {
-        var links = block.GetLinkedBlocks(simulation);
-        if (links.Count == 0)
+        if (block.instructions.Count == 1)
         {
-            return false;
-        }
-
-        if (links.Count() == 1)
-        {
-            if (block.RealChilds is { Count: 1 })
+            //loc_17F750
+            // STR             XZR, [SP,#0xF0+var_C8] 
+            //Current Block is only one Ins but not B Ins it's use next Block to Jump
+            var ins = block.instructions[0];
+            if (ins.Opcode() != OpCode.B)
             {
-                var link = links[0];
-                if (link.GetStartAddress() == block.RealChilds[0].GetStartAddress())
+                var link = block.GetLinkedBlocks(simulation)[0];
+                if (simulation.IsChildDispatcher(link))
                 {
-                    return false;
+                    return true;
                 }
-
-                // it's not jump to same block it's mean jump to bransh
-                return true;
             }
         }
 
         return false;
     }
 
-    private static void FixJumpToDispatchButNotBIns(this Block block, Block main, Simulation simulation)
+    private static bool IsJumpToDispatcherButNotWithBIns(this Block block, Simulation simulation)
     {
-        var insIndex = block.FindOperandDispatchInstructionIndex(main);
+        var ins = block.instructions[^1];
+        if (ins.Opcode() != OpCode.B)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsJumpToDispatcher(this Block block, Simulation simulation)
+    {
+        var links=block.GetLinkedBlocks(simulation);
+        if (links.Count!=1)
+        {
+            return false;
+        }
+        if (simulation.IsChildDispatcher(links[0]))
+        {
+            return true;
+        }
+
+        if (simulation.IsMainDispatcher(links[0]))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private static void FixJumpToDispatchButNotBIns(this Block block,Simulation simulation)
+    {
+        var insIndex = block.FindOperandDispatchInstructionIndex(simulation);
         if (insIndex != -1)
         {
+            if (insIndex+1==block.instructions.Count)
+            {
+                var fixIns=block.instructions[insIndex];
+                if (fixIns.InstructionSize==8)
+                {
+                   var nop= Instruction.CreateNOP($"0x{fixIns.GetAddress() + 4:X}");
+                   //Add to after fixIns 
+                     block.instructions.Insert(insIndex+1,nop);
+                }
+                fixIns.fixmachine_code = AssemBuildHelper.BuildJump(fixIns.FormatOpcode(OpCode.B), block.RealChilds[0].GetStartAddress());
+                return;
+            }
             //fix address in this index after 
             var ins = block.instructions[insIndex];
             for (int i = 0; i < block.instructions.Count; i++)
@@ -263,10 +291,12 @@ public static class BlockExtension
             }
         }
     }
+
     public static void FixMachineCodeNew(this Block block, Block main, Simulation simulation)
     {
         block.isFix = true;
         // if this not null  it's must be CFF_CSEL not other logic block
+        Logger.RedNewline("Start Fix RealBlock " + block);
         if (block.HasCFF_CSEL())
         {
             var index = block.FindIndex(block.CFF_CSEL);
@@ -294,31 +324,51 @@ public static class BlockExtension
                             var link = block.RealChilds[2];
                             var linkAddress = link.GetStartAddress();
                             var lastIns = block.instructions[^1];
-                            var newopcode= AssemBuildHelper.BuildJump(lastIns.FormatOpcode(OpCode.B), linkAddress);
+                            var newopcode = AssemBuildHelper.BuildJump(lastIns.FormatOpcode(OpCode.B), linkAddress);
                             Logger.InfoNewline("Final Fix CSLEAfterMove  with  " + newopcode);
-                            lastIns.fixmachine_code =newopcode;
+                            lastIns.fixmachine_code = newopcode;
                             foreach (var VARIABLE in block.RealChilds)
                             {
-                        
-                                Logger.ErrorNewline(" Child is " + VARIABLE.start_address);
+                                Logger.RedNewline(" Child is " + VARIABLE.start_address);
                             }
+
                             return;
                         }
                     }
-                
                 }
-                throw new Exception(" CFF_CSEL Not support fix this machine code \n" + block);  
+
+                throw new Exception(" CFF_CSEL Not support fix this machine code \n" + block);
             }
         }
         else
         {
             //Dont have CFF_CSEL
-            Logger.ErrorNewline(" FixMachineCodeNew  Dont have CFF_CSEL  IsJumpToDispatcher " +
-                                IsJumpToDispatcher(block, main, simulation));
-            if (IsJumpToDispatcher(block, main, simulation))
+            Logger.RedNewline(" FixMachineCodeNew  Dont have CFF_CSEL  IsJumpToDispatcher " +
+                              IsJumpToDispatcher(block, simulation));
+            
+            if (IsJumpToDispatcher(block,  simulation))
             {
-                if (IsJumpToDispatcherButNotWithBIns(block,main,simulation))
-                {   
+                //Check is only one Ins but not B Ins it's use next Block to Jump 
+                if (CheckRealBlockUseNextBlockJumpByOneIns(block, simulation))
+                {
+                    //Fix
+                    //Get Next Block
+                    var nextBlock = block.GetLinkedBlocks(simulation)[0];
+                    var firstIns = nextBlock.instructions[0];
+                    if (firstIns.InstructionSize == 8)
+                    {
+                        var nop = Instruction.CreateNOP($"0x{firstIns.GetAddress() + 4:X}");
+                        //Add to after first Ins
+                        nextBlock.instructions.Insert(1, nop);
+                    }
+                    firstIns.fixmachine_code = AssemBuildHelper.BuildJump(firstIns.FormatOpcode(OpCode.B),
+                        block.RealChilds[0].GetStartAddress());
+                    Logger.WarnNewline("Fix RealBlockUseNextBlockJumpByOneIns  \n" + block);
+                    return;
+                }
+
+                if (IsJumpToDispatcherButNotWithBIns(block,simulation))
+                {
                     //loc_15E604
                     // LDR             X9, [SP,#0x2D0+var_2B0]
                     // ADRP            X8, #qword_7289B8@PAGE
@@ -328,17 +378,17 @@ public static class BlockExtension
                     // STR             X8, [SP,#0x2D0+var_238]
                     // MOV             W8, #0x561D9EF8
                     // STP             X19, X9, [SP,#0x2D0+var_270]
-                
+
                     // loc_15E628
                     // CMP             W8, W23
                     // B.GT            loc_15E6C0
-                    // Logger.ErrorNewline("IsJumpToDispatcherButNotWithBIns  FixMachineCodeNew  \n" + block);
-                    FixJumpToDispatchButNotBIns( block, main, simulation);
-                  
-                   
+                    Logger.WarnNewline("IsJumpToDispatcherButNotWithBIns  FixMachineCodeNew  \n" + block);
+                    FixJumpToDispatchButNotBIns(block, simulation);
+
+
                     return;
                 }
-               
+
                 var ins = block.instructions[^1];
                 if (block.RealChilds == null)
                 {
@@ -357,12 +407,22 @@ public static class BlockExtension
                 }
                 else
                 {
+                    Logger.InfoNewline("Child Count is " + block.RealChilds.Count);
+                    foreach (var VARIABLE in block.RealChilds)
+                    {
+                        Logger.InfoNewline("Child is " + VARIABLE.start_address);
+                    }
                     throw new Exception("Not support fix this machine code" + block.start_address);
                 }
             }
             else
             {
-               
+                if (block.GetLinkedBlocks(simulation).Count == 2)
+                {
+                    Logger.WarnNewline("is Normal Block don't need Fix ! " + block);
+                    return;
+                }
+                
                 Logger.WarnNewline("!!!!!!!!!!!!Warning is inLine Block ? IsJumpSameBlock ? " +
                                    IsJumpToSameBlock(block, main, simulation)
                                    + " \n" + block);
