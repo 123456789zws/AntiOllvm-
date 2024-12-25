@@ -225,7 +225,7 @@ public class Simulation
                     //Assign immediate value to register
                     var register = GetRegister(left.registerName);
                     var imm = right.immediateValue;
-                    register.value = imm;
+                    register.SetLongValue(imm);
                     Logger.RedNewline($"Update  MOV {left.registerName} = {imm} ({imm:X})");
                 }
 
@@ -238,7 +238,7 @@ public class Simulation
                 var shift = instruction.Operands()[2].shiftType;
                 var reg = GetRegister(dest.registerName);
                 var v = MathHelper.CalculateMOVK(reg.GetLongValue(), imm, shift, instruction.Operands()[2].shiftValue);
-                reg.value = v;
+                reg.SetLongValue(v);
                 Logger.InfoNewline($"Update MOVK {dest.registerName} = {imm} ({imm:X})");
                 break;
             }
@@ -346,8 +346,8 @@ public class Simulation
 
                         var needOperandRegister = instruction.Operands()[0].registerName;
                         var operandLeft = instruction.Operands()[1].registerName;
-                        var left = _regContext.GetRegister(operandLeft).GetLongValue();
-                        _regContext.SetRegister(needOperandRegister, left);
+                        var left = _regContext.GetRegister(operandLeft);
+                        _regContext.SetRegister(needOperandRegister, left.value);
                         var nextBlock = block.GetLinkedBlocks(this)[0];
                         var leftBlock = FindRealBlock(nextBlock);
                         Logger.InfoNewline("Block "+block.start_address+" Left  is Link To  \n"+leftBlock
@@ -355,10 +355,10 @@ public class Simulation
                         list.Add(leftBlock);
                         _regContext.RestoreRegisters(block.start_address);
                         var operandRight = instruction.Operands()[2].registerName;
-                        var right = _regContext.GetRegister(operandRight).GetLongValue();
+                        var right = _regContext.GetRegister(operandRight);
                         Logger.InfoNewline("Block "+block.start_address+" Right  is Link To  \n"+leftBlock
                         +"Right Imm is "+right);
-                        _regContext.SetRegister(needOperandRegister, right);
+                        _regContext.SetRegister(needOperandRegister, right.value);
                         if (CSELAfterMove != null)
                         {
                             SyncLogicInstruction(CSELAfterMove);
@@ -624,7 +624,7 @@ public class Simulation
                     //Assign immediate value to register
                     var register = GetRegister(left.registerName);
                     var imm = right.immediateValue;
-                    register.value = imm;
+                    register.SetLongValue(imm);
                     Logger.RedNewline($"AssignRegisterByInstruction MOV {left.registerName} = {imm} ({imm:X})");
                 }
             }
@@ -636,7 +636,7 @@ public class Simulation
                 var shift = instruction.Operands()[2].shiftType;
                 var reg = GetRegister(dest.registerName);
                 var v = MathHelper.CalculateMOVK(reg.GetLongValue(), imm, shift, instruction.Operands()[2].shiftValue);
-                reg.value = v;
+                reg.SetLongValue(v);
                 Logger.InfoNewline($"AssignRegisterByInstruction MOVK {dest.registerName} = {imm} ({imm:X})");
                 break;
             }

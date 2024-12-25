@@ -16,10 +16,10 @@ public class RegisterContext
     {
         for (int i = 0; i < 31; i++)
         {
-            _registers.Add(new Register { name = "X" + i, value = 0 });
+            _registers.Add(new Register { name = "X" + i, value = new Immediate(0) });
         }
 
-        _registers.Add(new Register { name = "SP", value = 0 });
+        // _registers.Add(new Register { name = "SP", value = 0 });
         
     }
     public void RestoreRegisters(string key)
@@ -62,13 +62,18 @@ public class RegisterContext
         }
     }
     
-    public void SetRegister(string name, object value)
+    public void SetRegister(string name, RegisterValue value)
     {
-        long v = (long)value;
+        
         // Logger.InfoNewline("SetRegister  " + name + " = " + v.ToString("X"));
         name = name.Replace("W", "X");
-        GetRegister(name).value = value;
-        
+        var reg= GetRegister(name);
+        if (value is Immediate immediate)
+        {
+            reg.SetLongValue(immediate.Value);
+            return;
+        }
+        throw new Exception(" value is not Immediate");
     }
     public Register GetRegister(string name)
     {
