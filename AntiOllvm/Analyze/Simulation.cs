@@ -308,6 +308,11 @@ public class Simulation
         bool CESLAfterMoveOpreand = false;
         var isRealBlockDispatcherNext= _analyzer.IsRealBlockWithDispatchNextBlock(block, _mainDispatcher, _regContext, this);
         Logger.WarnNewline("Find Real Block isRealBlockDispatcherNext   "+isRealBlockDispatcherNext + "  \n" + block);
+        if (isRealBlockDispatcherNext)
+        {
+            SyncLogicBlock(block);
+            IsUpdateDispatch = true;    
+        }
         foreach (var instruction in block.instructions)
         {
             switch (instruction.Opcode())
@@ -315,12 +320,12 @@ public class Simulation
                 case OpCode.MOV:
                 case OpCode.MOVK:
                 {
-                    if (_analyzer.IsRealBlockWithDispatchNextBlock(block, _mainDispatcher, _regContext, this))
-                    {
-                        
-                        SyncLogicInstruction(instruction);
-                        IsUpdateDispatch = true;
-                    }
+                    // if (_analyzer.IsRealBlockWithDispatchNextBlock(block, _mainDispatcher, _regContext, this))
+                    // {
+                    //     
+                    //     SyncLogicInstruction(instruction);
+                    //     IsUpdateDispatch = true;
+                    // }
 
                     if (HasCFF_CSEL)
                     {
@@ -338,12 +343,6 @@ public class Simulation
                         _regContext.SnapshotRegisters(block.start_address);
                         block.CFF_CSEL = instruction;
                         Logger.InfoNewline(" Have  CFF_CSEL " + instruction);
-                        var CSELAfterMove = IsCSELAfterMove(block, instruction);
-                        if (CSELAfterMove != null)
-                        {
-                            SyncLogicInstruction(CSELAfterMove);
-                        }
-
                         var needOperandRegister = instruction.Operands()[0].registerName;
                         var operandLeft = instruction.Operands()[1].registerName;
                         var left = _regContext.GetRegister(operandLeft);
@@ -359,17 +358,9 @@ public class Simulation
                         Logger.InfoNewline("Block "+block.start_address+" Right  is Link To  \n"+leftBlock
                         +"Right Imm is "+right);
                         _regContext.SetRegister(needOperandRegister, right.value);
-                        if (CSELAfterMove != null)
-                        {
-                            SyncLogicInstruction(CSELAfterMove);
-                        }
-
                         var rightBlock = FindRealBlock(nextBlock);
                         list.Add(rightBlock);
-                        if (block.GetStartAddress()==0x17f760)
-                        {
-                                Logger.InfoNewline("============");
-                        }
+                        
                     }
 
 
