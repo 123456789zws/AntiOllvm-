@@ -96,6 +96,7 @@ public static class InstructionsExtension
             "MOV" => OpCode.MOV,
             "MOVK" => OpCode.MOVK,
             "CMP" => OpCode.CMP,
+            "B.LT" => OpCode.B_LT,
             "B.LE" => OpCode.B_LE,
             "B.GT" => OpCode.B_GT,
             "B.EQ" => OpCode.B_EQ,
@@ -129,6 +130,18 @@ public static class InstructionsExtension
             "CMN"   => OpCode.CMN,
             "SUBS" => OpCode.SUBS,
             "MULT" => OpCode.MULT,
+            "BLR"   => OpCode.BLR,
+            "ORR"  => OpCode.ORR,
+            "MUL"   => OpCode.MUL,
+            "LSR"   => OpCode.LSR,
+            "ASR"   => OpCode.ASR,
+            "EON"   => OpCode.EON,
+            "LSL"   => OpCode.LSL,
+            "CBNZ"  => OpCode.CBNZ,
+            "CSINC" => OpCode.CSINC,
+            "MADD"  => OpCode.MADD,
+            "TBNZ"  => OpCode.TBNZ,
+            "CCMP"  => OpCode.CCMP,
             _ => throw new Exception("Unknown mnemonic: " + mnemonic)
         };
     }

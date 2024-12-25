@@ -320,13 +320,6 @@ public class Simulation
                 case OpCode.MOV:
                 case OpCode.MOVK:
                 {
-                    // if (_analyzer.IsRealBlockWithDispatchNextBlock(block, _mainDispatcher, _regContext, this))
-                    // {
-                    //     
-                    //     SyncLogicInstruction(instruction);
-                    //     IsUpdateDispatch = true;
-                    // }
-
                     if (HasCFF_CSEL)
                     {
                         CESLAfterMoveOpreand = true;
@@ -360,10 +353,7 @@ public class Simulation
                         _regContext.SetRegister(needOperandRegister, right.value);
                         var rightBlock = FindRealBlock(nextBlock);
                         list.Add(rightBlock);
-                        
                     }
-
-
                     break;
                 }
                 case OpCode.B:
