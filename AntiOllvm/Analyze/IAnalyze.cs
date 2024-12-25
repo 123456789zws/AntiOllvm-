@@ -13,7 +13,7 @@ public interface IAnalyze
      * we need the right time to sync the block
      */
     bool IsRealBlockWithDispatchNextBlock(Block block, Block mainDispatcher, RegisterContext regContext, Simulation simulation);
-    bool IsCSELOperandDispatchRegister(Instruction instruction, Block mainDispatcher, RegisterContext regContext);
+    bool IsCSELOperandDispatchRegister(Instruction instruction, RegisterContext regContext);
     /**
      * When framework init, this method will be called
      */
@@ -23,4 +23,10 @@ public interface IAnalyze
      *  if function is have multiple dispatcher, we need to know the operand register name
      */
     List<string> GetDispatcherOperandRegisterNames();
+    
+    /**
+ * When Main Dispatcher is found, we need to know if the init register block has CSEL
+ */
+    Instruction IsInitRegisterBlockHasCSEL(Block initBlock,Block mainDispatcher, Simulation simulation, RegisterContext regContext);
+
 }

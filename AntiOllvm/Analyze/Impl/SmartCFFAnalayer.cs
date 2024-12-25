@@ -25,6 +25,12 @@ public class SmartCffAnalayer : IAnalyze
         return _dispatcherFinder.GetDispatcherOperandRegisterNames();
     }
 
+    public Instruction IsInitRegisterBlockHasCSEL(Block initBlock, Block mainDispatcher, Simulation simulation,
+        RegisterContext regContext)
+    {
+        return _dispatcherFinder.IsInitRegisterBlockHasCSEL(initBlock,mainDispatcher,simulation,regContext);
+    }
+
     public void InitAfterRegisterAssign(RegisterContext context, Block mainDispatcher, List<Block> allBlocks, Simulation simulation)
     {
         
@@ -52,9 +58,9 @@ public class SmartCffAnalayer : IAnalyze
        return _dispatcherFinder.IsRealBlockWithDispatchNextBlock(block,regContext,simulation);
     }
 
-    public bool IsCSELOperandDispatchRegister(Instruction instruction, Block mainDispatcher, RegisterContext regContext)
+    public bool IsCSELOperandDispatchRegister(Instruction instruction, RegisterContext regContext)
     {
-        return _dispatcherFinder.IsCselOperandDispatchRegister(instruction,mainDispatcher,regContext);
+        return _dispatcherFinder.IsCselOperandDispatchRegister(instruction,regContext);
     }
 
   
