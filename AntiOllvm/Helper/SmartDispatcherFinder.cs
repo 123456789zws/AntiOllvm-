@@ -16,8 +16,8 @@ public class SmartDispatcherFinder
 {
     private List<Block> _allBlocks;
     private Simulation _simulation;
+    private Block _initBlock;
     public List<string> _multiCompareRegs = new();
-    private Block mainDispatcher;
     private List<Block> _multiDispatcher = new();
     private List<Block> _childDispatcher = new();
     private bool CheckDispatcherFeatureWithTwoInstruction(Block block, string regName)
@@ -223,7 +223,14 @@ B.LE            loc_18211C
         }
         //Order by start address
         _multiDispatcher = _multiDispatcher.OrderBy(x => x.GetStartAddress()).ToList();
-        mainDispatcher = _multiDispatcher[0];
+        
+        //findDispatchers order by start address
+        var findDispatchersOrder = 
+            findDispatchers.OrderBy(x => x.Key).
+                ToDictionary(x => x.Key, x => x.Value).ToList();
+        // var initBlock = ;
+        _initBlock= _simulation.FindBlockByAddress(findDispatchersOrder[0].Key);
+        
     }
 
     public void Init(List<Block> allBlocks, Simulation simulation)
@@ -233,35 +240,11 @@ B.LE            loc_18211C
         BuildDispatcher();
     }
 
-    public bool IsMainDispatcher(Block block, RegisterContext context, List<Block> allBlocks, Simulation simulation)
-    {
-        
-        return mainDispatcher.Equals(block);
-    }
 
-    public bool IsChildDispatcher(Block curBlock, RegisterContext registerContext)
-    {   
-        //Use cache
-        if (_multiDispatcher.Contains(curBlock))
-        {
-            return true;
-        }
-        if (_childDispatcher.Contains(curBlock))
-        {
-            return true;
-        }
-        if (CheckChildDispatcherFeature(curBlock, registerContext))
-        {
-            if (!_childDispatcher.Contains(curBlock))
-            {
-                _childDispatcher.Add(curBlock);
-            }
-            return true;
-        }
-        return false;
-    }
 
-    private bool CheckChildDispatcherFeature(Block block, RegisterContext context)
+   
+
+    private bool CheckChildDispatcherFeature(Block block, Simulation context)
     {
         if (block.instructions.Count==1)
         {   
@@ -280,7 +263,7 @@ B.LE            loc_18211C
         return false;
     }
 
-    private bool CheckChildDispatcherFeatureWith1Ins(Block block, RegisterContext context)
+    private bool CheckChildDispatcherFeatureWith1Ins(Block block, Simulation context)
     {
         // [Block] 0x17f848
         // 0x17f848   MOV W8,#0x67DE569C
@@ -295,7 +278,7 @@ B.LE            loc_18211C
             {   
                 //Got the next is Child?
                 var link=block.GetLinkedBlocks(_simulation)[0];
-                if (IsChildDispatcher(link, context))
+                if (IsDispatcherBlock(link, context))
                 {
                     return true;
                 }
@@ -306,7 +289,7 @@ B.LE            loc_18211C
         return false;
     }
 
-    private bool CheckChildDispatcherFeatureWith3Ins(Block block, RegisterContext context)
+    private bool CheckChildDispatcherFeatureWith3Ins(Block block, Simulation context)
     {
         // MOV             W11, #0xEFF1B6F8
         // CMP             W10, W11
@@ -321,19 +304,19 @@ B.LE            loc_18211C
   
 
 
-    private bool CheckChildDispatcherFeatureWith2Ins(Block block, RegisterContext context)
+    private bool CheckChildDispatcherFeatureWith2Ins(Block block, Simulation simulation)
     {
         //* Find Child when this block only 2 instruction
         // * CMP W8,W9
         // * B.EQ 0X100
-        if (this.CheckChildDispatcherFeatureWith2Ins4Cmp( block, context))
+        if (this.CheckChildDispatcherFeatureWith2Ins4Cmp( block, simulation))
         {
             return true;
         }
         //  MOV             W10, #0x8614E721
         //  B               loc_17F59C
         //Fix this case
-        if (this.CheckChildDispatcherFeatureWith2Ins4MovAndB( block, context))
+        if (this.CheckChildDispatcherFeatureWith2Ins4MovAndB( block, simulation))
         {
             return true;
         }
@@ -341,7 +324,7 @@ B.LE            loc_18211C
         return false;
     }
     
-    public bool IsRealBlockWithDispatchNextBlock(Block block, RegisterContext regContext, Simulation simulation)
+    public bool IsRealBlockWithDispatchNextBlock(Block block,Simulation simulation)
     {
         
         bool hasBInstruction = false;
@@ -356,7 +339,7 @@ B.LE            loc_18211C
                 {
                     return true;
                 }
-                if (IsChildDispatcher(nextBlock, regContext))
+                if (IsDispatcherBlock(nextBlock, simulation))
                 {
                     return true;
                 }
@@ -395,7 +378,7 @@ B.LE            loc_18211C
         return false;
     }
 
-    public bool IsCselOperandDispatchRegister(Instruction instruction,RegisterContext regContext)
+    public bool IsCselOperandDispatchRegister(Instruction instruction,Simulation simulation)
     {
         var first = instruction.Operands()[0].registerName;
         var second = instruction.Operands()[1].registerName;
@@ -403,8 +386,8 @@ B.LE            loc_18211C
 
         if (_multiCompareRegs.Contains(first))
         {
-            var secondReg = regContext.GetRegister(second);
-            var thirdReg = regContext.GetRegister(third);
+            var secondReg = simulation.RegContext.GetRegister(second);
+            var thirdReg = simulation.RegContext.GetRegister(third);
             if (secondReg.GetLongValue() != 0 && thirdReg.GetLongValue() != 0)
             {
                 return true;
@@ -419,7 +402,7 @@ B.LE            loc_18211C
         return _multiCompareRegs;
     }
 
-    public Instruction IsInitRegisterBlockHasCSEL(Block initBlock, Block block, Simulation simulation, RegisterContext regContext)
+    public Instruction IsInitRegisterBlockHasCSEL(Block initBlock, Simulation simulation, RegisterContext regContext)
     {
         
         foreach (var instruction in initBlock.instructions)
@@ -451,5 +434,32 @@ B.LE            loc_18211C
         }
        
         return null;
+    }
+
+    public bool IsInitBlock(Block block, Simulation simulation)
+    {
+        return block.Equals(_initBlock);
+    }
+
+    public bool IsDispatcherBlock(Block curBlock,Simulation context)
+    {
+        //Use cache
+        if (_multiDispatcher.Contains(curBlock))
+        {
+            return true;
+        }
+        if (_childDispatcher.Contains(curBlock))
+        {
+            return true;
+        }
+        if (CheckChildDispatcherFeature(curBlock, context))
+        {
+            if (!_childDispatcher.Contains(curBlock))
+            {
+                _childDispatcher.Add(curBlock);
+            }
+            return true;
+        }
+        return false;
     }
 }

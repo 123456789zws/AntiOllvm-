@@ -1,4 +1,5 @@
-﻿using AntiOllvm.entity;
+﻿using AntiOllvm.Analyze;
+using AntiOllvm.entity;
 using AntiOllvm.Helper;
 using AntiOllvm.Logging;
 
@@ -7,7 +8,7 @@ namespace AntiOllvm.Extension;
 public static class SmartDispatcherFinderExtension
 {
     public static bool CheckChildDispatcherFeatureWith3Ins4MoveCmpB(this SmartDispatcherFinder finder, Block block,
-        RegisterContext context)
+        Simulation simulation)
     {
         bool hasMov = false;
         bool hasCmp = false;
@@ -35,7 +36,7 @@ public static class SmartDispatcherFinderExtension
                     if (finder._multiCompareRegs.Contains(leftCmp.registerName))
                     {
                         //Get is immediate value
-                        var leftValue = context.GetRegister(leftCmp.registerName).GetLongValue();
+                        var leftValue = simulation.RegContext.GetRegister(leftCmp.registerName).GetLongValue();
                         if (leftValue != 0&& rightCmp.registerName==curCmpName)
                         {
                             hasCmp = true;
@@ -62,7 +63,7 @@ public static class SmartDispatcherFinderExtension
     }
 
     public static bool CheckChildDispatcherFeatureWith2Ins4MovAndB(this SmartDispatcherFinder finder, Block block,
-        RegisterContext context)
+        Simulation simulation)
     {
         bool hasMov = false;
         bool hasB = false;
@@ -95,7 +96,7 @@ public static class SmartDispatcherFinderExtension
     }
 
     public static bool CheckChildDispatcherFeatureWith2Ins4Cmp(this SmartDispatcherFinder finder, Block block,
-        RegisterContext context)
+        Simulation simulation)
     {
         bool hasCmp = false;
         bool hasBCond = false;
@@ -109,8 +110,8 @@ public static class SmartDispatcherFinderExtension
                     if (finder._multiCompareRegs.Contains(left.registerName))
                     {
                         //Get is immediate value
-                        var leftValue = context.GetRegister(left.registerName).GetLongValue();
-                        var rightValue = context.GetRegister(right.registerName).GetLongValue();
+                        var leftValue = simulation.RegContext.GetRegister(left.registerName).GetLongValue();
+                        var rightValue = simulation.RegContext.GetRegister(right.registerName).GetLongValue();
                         if (leftValue != 0 && rightValue != 0)
                         {
                             hasCmp = true;

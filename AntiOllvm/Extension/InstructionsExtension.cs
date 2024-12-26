@@ -1,4 +1,5 @@
-﻿using AntiOllvm.entity;
+﻿using AntiOllvm.Analyze;
+using AntiOllvm.entity;
 using AntiOllvm.Logging;
 
 namespace AntiOllvm.Extension;
@@ -177,6 +178,13 @@ public static class InstructionsExtension
             }
         }
         throw new Exception("CSEL not support " + instruction.Opcode() +" ins "+instruction);
-    
+    }
+
+  
+    public static bool IsJumpToDispatcher(this Instruction instruction,Simulation simulation)
+    {
+        if (instruction.Opcode() != OpCode.B) return false;
+        var block = simulation.FindBlockByAddress(instruction.GetRelativeAddress());
+        return simulation.IsDispatcherBlock(block);
     }
 }

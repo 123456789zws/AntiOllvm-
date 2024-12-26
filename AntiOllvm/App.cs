@@ -1,6 +1,5 @@
 ﻿using AntiOllvm.Analyze;
-using AntiOllvm.Analyze.Type;
-using AntiOllvm.Helper;
+using AntiOllvm.Analyze.Impl;
 using AntiOllvm.Logging;
 
 namespace AntiOllvm;
