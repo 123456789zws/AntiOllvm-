@@ -16,8 +16,8 @@ public class SmartDispatcherFinder
 {
     private List<Block> _allBlocks;
     private Simulation _simulation;
+    private Block _initBlock;
     public List<string> _multiCompareRegs = new();
-    private Block mainDispatcher;
     private List<Block> _multiDispatcher = new();
     private List<Block> _childDispatcher = new();
     private bool CheckDispatcherFeatureWithTwoInstruction(Block block, string regName)
@@ -62,9 +62,64 @@ public class SmartDispatcherFinder
         {
             return CheckDispatcherFeatureWithTwoInstruction(block, compareReg);
         }
+        if (block.instructions.Count == 3)
+        {   
+            return CheckDispatcherFeatureWith3Instruction(block, compareReg);
+        }
+        return false;
+    }
+
+
+// MOVK            W27, #0x778E,LSL#16
+// CSEL            W8, W12, W19, EQ
+// MOVK            W9, #0x94FC,LSL#16
+// STR             W8, [SP,#0x330+var_2AC]
+    /**
+     * loc_1820A0
+MOV             W8, W9
+CMP             W9, W22
+B.LE            loc_18211C
+     */
+    //Dispatcher maybe like this case
+    private bool CheckDispatcherFeatureWith3Instruction(Block block, string compareReg)
+    {
+        bool hasMov = false;
+        bool hasCmp = false;
+        bool hasBCond = false;
+        foreach (var instruction in block.instructions)
+        {
+            switch (instruction.Opcode())
+            {
+                case OpCode.MOV:
+
+                    hasMov = true;
+
+                    break;
+                case OpCode.CMP:
+                    var left = instruction.Operands()[0];
+                    if (left.registerName == compareReg)
+                    {
+                        hasCmp = true;
+                    }
+
+                    break;
+                case OpCode.B_NE:
+                case OpCode.B_EQ:
+                case OpCode.B_GT:
+                case OpCode.B_LE:
+                    hasBCond = true;
+                    break;
+            }
+        }
+
+        if (hasMov && hasCmp && hasBCond)
+        {
+            return true;
+        }
 
         return false;
     }
+
 
     private void BuildDispatcher()
     {
@@ -120,11 +175,12 @@ public class SmartDispatcherFinder
                 var compareReg = lastMovk?.Operands()[0].registerName;
                 if (CheckHasDispatcherFeature(dispatcher, compareReg))
                 {
-                    Logger.WarnNewline("Find multi Main Dispatcher " + dispatcher.start_address
-                                                                     + " and init Register is " +
-                                                                     initDispatcher.start_address + " compareRegister is  " +compareReg);
+                   
                     if (!_multiDispatcher.Contains(dispatcher))
                     {
+                        Logger.WarnNewline("Find multi Main Dispatcher " + dispatcher.start_address
+                                                                         + " and init Register is " +
+                                                                         initDispatcher.start_address + " compareRegister is  " +compareReg);
                         _multiDispatcher.Add(dispatcher);
                     }
 
@@ -146,12 +202,13 @@ public class SmartDispatcherFinder
                     var compareReg = lastMovk?.Operands()[0].registerName;
                     if (CheckHasDispatcherFeature(dispatcherBlock, compareReg))
                     {
-                        Logger.WarnNewline("Find multi Main Dispatcher " + dispatcherBlock.start_address
-                                                                         + " and init Register is " +
-                                                                         initDispatcher.start_address
-                                                                         +" compareRegister is  "+compareReg);
+                      
                         if (!_multiDispatcher.Contains(dispatcherBlock))
                         {
+                            Logger.WarnNewline("Find multi Main Dispatcher " + dispatcherBlock.start_address
+                                                                             + " and init Register is " +
+                                                                             initDispatcher.start_address
+                                                                             +" compareRegister is  "+compareReg);
                             _multiDispatcher.Add(dispatcherBlock);
                         }
 
@@ -166,7 +223,14 @@ public class SmartDispatcherFinder
         }
         //Order by start address
         _multiDispatcher = _multiDispatcher.OrderBy(x => x.GetStartAddress()).ToList();
-        mainDispatcher = _multiDispatcher[0];
+        
+        //findDispatchers order by start address
+        var findDispatchersOrder = 
+            findDispatchers.OrderBy(x => x.Key).
+                ToDictionary(x => x.Key, x => x.Value).ToList();
+        // var initBlock = ;
+        _initBlock= _simulation.FindBlockByAddress(findDispatchersOrder[0].Key);
+        
     }
 
     public void Init(List<Block> allBlocks, Simulation simulation)
@@ -176,35 +240,11 @@ public class SmartDispatcherFinder
         BuildDispatcher();
     }
 
-    public bool IsMainDispatcher(Block block, RegisterContext context, List<Block> allBlocks, Simulation simulation)
-    {
-        
-        return mainDispatcher.Equals(block);
-    }
 
-    public bool IsChildDispatcher(Block curBlock, RegisterContext registerContext)
-    {   
-        //Use cache
-        if (_multiDispatcher.Contains(curBlock))
-        {
-            return true;
-        }
-        if (_childDispatcher.Contains(curBlock))
-        {
-            return true;
-        }
-        if (CheckChildDispatcherFeature(curBlock, registerContext))
-        {
-            if (!_childDispatcher.Contains(curBlock))
-            {
-                _childDispatcher.Add(curBlock);
-            }
-            return true;
-        }
-        return false;
-    }
 
-    private bool CheckChildDispatcherFeature(Block block, RegisterContext context)
+   
+
+    private bool CheckChildDispatcherFeature(Block block, Simulation context)
     {
         if (block.instructions.Count==1)
         {   
@@ -223,7 +263,7 @@ public class SmartDispatcherFinder
         return false;
     }
 
-    private bool CheckChildDispatcherFeatureWith1Ins(Block block, RegisterContext context)
+    private bool CheckChildDispatcherFeatureWith1Ins(Block block, Simulation context)
     {
         // [Block] 0x17f848
         // 0x17f848   MOV W8,#0x67DE569C
@@ -238,7 +278,7 @@ public class SmartDispatcherFinder
             {   
                 //Got the next is Child?
                 var link=block.GetLinkedBlocks(_simulation)[0];
-                if (IsChildDispatcher(link, context))
+                if (IsDispatcherBlock(link, context))
                 {
                     return true;
                 }
@@ -249,7 +289,7 @@ public class SmartDispatcherFinder
         return false;
     }
 
-    private bool CheckChildDispatcherFeatureWith3Ins(Block block, RegisterContext context)
+    private bool CheckChildDispatcherFeatureWith3Ins(Block block, Simulation context)
     {
         // MOV             W11, #0xEFF1B6F8
         // CMP             W10, W11
@@ -264,19 +304,19 @@ public class SmartDispatcherFinder
   
 
 
-    private bool CheckChildDispatcherFeatureWith2Ins(Block block, RegisterContext context)
+    private bool CheckChildDispatcherFeatureWith2Ins(Block block, Simulation simulation)
     {
         //* Find Child when this block only 2 instruction
         // * CMP W8,W9
         // * B.EQ 0X100
-        if (this.CheckChildDispatcherFeatureWith2Ins4Cmp( block, context))
+        if (this.CheckChildDispatcherFeatureWith2Ins4Cmp( block, simulation))
         {
             return true;
         }
         //  MOV             W10, #0x8614E721
         //  B               loc_17F59C
         //Fix this case
-        if (this.CheckChildDispatcherFeatureWith2Ins4MovAndB( block, context))
+        if (this.CheckChildDispatcherFeatureWith2Ins4MovAndB( block, simulation))
         {
             return true;
         }
@@ -284,7 +324,7 @@ public class SmartDispatcherFinder
         return false;
     }
     
-    public bool IsRealBlockWithDispatchNextBlock(Block block, RegisterContext regContext, Simulation simulation)
+    public bool IsRealBlockWithDispatchNextBlock(Block block,Simulation simulation)
     {
         
         bool hasBInstruction = false;
@@ -299,7 +339,7 @@ public class SmartDispatcherFinder
                 {
                     return true;
                 }
-                if (IsChildDispatcher(nextBlock, regContext))
+                if (IsDispatcherBlock(nextBlock, simulation))
                 {
                     return true;
                 }
@@ -338,7 +378,7 @@ public class SmartDispatcherFinder
         return false;
     }
 
-    public bool IsCselOperandDispatchRegister(Instruction instruction, Block mainDispatcher, RegisterContext regContext)
+    public bool IsCselOperandDispatchRegister(Instruction instruction,Simulation simulation)
     {
         var first = instruction.Operands()[0].registerName;
         var second = instruction.Operands()[1].registerName;
@@ -346,8 +386,8 @@ public class SmartDispatcherFinder
 
         if (_multiCompareRegs.Contains(first))
         {
-            var secondReg = regContext.GetRegister(second);
-            var thirdReg = regContext.GetRegister(third);
+            var secondReg = simulation.RegContext.GetRegister(second);
+            var thirdReg = simulation.RegContext.GetRegister(third);
             if (secondReg.GetLongValue() != 0 && thirdReg.GetLongValue() != 0)
             {
                 return true;
@@ -360,5 +400,66 @@ public class SmartDispatcherFinder
     public List<string> GetDispatcherOperandRegisterNames()
     {
         return _multiCompareRegs;
+    }
+
+    public Instruction IsInitRegisterBlockHasCSEL(Block initBlock, Simulation simulation, RegisterContext regContext)
+    {
+        
+        foreach (var instruction in initBlock.instructions)
+        {
+            switch (instruction.Opcode())
+            {
+                case OpCode.CSEL:
+                {
+                    var csel = instruction;
+                    if (csel==null)
+                    {
+                        return null;
+                    }
+                    var first = csel.Operands()[0].registerName;
+                    var second = csel.Operands()[1].registerName;
+                    var third = csel.Operands()[2].registerName;
+                    if (_multiCompareRegs.Contains(first))
+                    {
+                        var secondReg = regContext.GetRegister(second);
+                        var thirdReg = regContext.GetRegister(third);
+                        if (secondReg.GetLongValue() != 0 && thirdReg.GetLongValue() != 0)
+                        {
+                            return csel;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+       
+        return null;
+    }
+
+    public bool IsInitBlock(Block block, Simulation simulation)
+    {
+        return block.Equals(_initBlock);
+    }
+
+    public bool IsDispatcherBlock(Block curBlock,Simulation context)
+    {
+        //Use cache
+        if (_multiDispatcher.Contains(curBlock))
+        {
+            return true;
+        }
+        if (_childDispatcher.Contains(curBlock))
+        {
+            return true;
+        }
+        if (CheckChildDispatcherFeature(curBlock, context))
+        {
+            if (!_childDispatcher.Contains(curBlock))
+            {
+                _childDispatcher.Add(curBlock);
+            }
+            return true;
+        }
+        return false;
     }
 }

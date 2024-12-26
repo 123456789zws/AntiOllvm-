@@ -6,19 +6,23 @@ namespace AntiOllvm;
 public class Register : ICloneable
 {
     public string name { get; set; }
-    public object value { get; set; }
+    public RegisterValue value { get; set; }
 
     public const long UNKNOWN_VALUE = 0;
-
+    
+    public void SetLongValue( long v)
+    {
+        value = new Immediate(v);
+    }
     public long GetLongValue()
     {
-        if (value is long)
+        if (value is Immediate immediate)
         {
-            IConvertible convertible = (IConvertible)value;
+            IConvertible convertible = immediate.Value;
             return convertible.ToLong();
         }
-
-        return UNKNOWN_VALUE;
+        throw new Exception(" value is not Immediate");
+        // return UNKNOWN_VALUE;
     }
 
     public int GetIntValue()
@@ -42,7 +46,7 @@ public class Register : ICloneable
         return new Register
         {
             name = name,
-            value = value
+            value = (RegisterValue)value.Clone()
         };
     }
 }

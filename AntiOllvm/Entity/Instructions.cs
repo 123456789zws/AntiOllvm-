@@ -17,6 +17,21 @@ public class Instruction
     public string fixmachine_byteCode { get; set; }
     
     
+    public void SetFixMachineCode(string fixMachineCode)
+    {
+        if (string.IsNullOrEmpty(fixmachine_code))
+        {
+            fixmachine_code = fixMachineCode;
+        }
+        else
+        {
+            //Check is same ? 
+            if (fixmachine_code != fixMachineCode)
+            {
+               throw new Exception( "Fix machine code is not same it's error result");
+            }
+        }
+    }
     public int InstructionSize => GetInstructionSize();
     
     private int GetInstructionSize()
@@ -189,7 +204,8 @@ public class Instruction
     {
         return $"{mnemonic} {operands_str}";
     }
-
+    
+    
     public static Instruction CreateNOP(string address)
     {
         Instruction ins= new();
@@ -197,7 +213,7 @@ public class Instruction
         ins.mnemonic = "NOP";
         ins.operands_str = "";
         ins.machine_code = "D503201F";
-        ins.fixmachine_code = "NOP";
+        ins.SetFixMachineCode("NOP");
         return ins;
     }
 }
