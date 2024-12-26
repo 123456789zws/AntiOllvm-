@@ -168,6 +168,15 @@ public class Simulation
                     register.SetLongValue(imm);
                     Logger.RedNewline($"AssignRegisterByInstruction MOV {left.registerName} = {imm} ({imm:X})");
                 }
+
+                if (left.kind==Arm64OperandKind.Register && right.kind==Arm64OperandKind.Register)
+                {
+                    var leftReg = _regContext.GetRegister(left.registerName);
+                    var rightReg = _regContext.GetRegister(right.registerName);
+                    leftReg.SetLongValue(rightReg.GetLongValue());
+                    Logger.RedNewline($"AssignRegisterByInstruction MOV {left.registerName} = {right.registerName} ({rightReg.GetLongValue():X})");
+                }
+               
             }
                 break;
             case "MOVK":
@@ -190,12 +199,18 @@ public class Simulation
         {
             switch (instruction.Opcode())
             {
+                case OpCode.MOVK:
+                {
+                    AssignRegisterByInstruction(instruction);
+                    Logger.InfoNewline("MOVK " + instruction.Operands()[0].registerName + " = " +
+                                       instruction.Operands()[1].immediateValue + " in DispatchBlock ============");
+                    break;
+                }
                 case OpCode.MOV:
                 {
                     //Runnning MOV instruction in Dispatch we need sync this
                     AssignRegisterByInstruction(instruction);
-                    Logger.InfoNewline("MOV " + instruction.Operands()[0].registerName + " = " +
-                                       instruction.Operands()[1].immediateValue + " in DispatchBlock ============");
+                  
                     break;
                 }
                 case OpCode.B:
@@ -378,6 +393,7 @@ public class Simulation
             var needOperandRegister = cselInstruction.Operands()[0].registerName;
             var operandLeft = cselInstruction.Operands()[1].registerName;
             var left = _regContext.GetRegister(operandLeft);
+            Logger.InfoNewline(" Write left Imm "+left.value);
             _regContext.SetRegister(needOperandRegister, left.value);
             var nextBlock = block.GetLinkedBlocks(this)[0];
             var leftBlock = FindRealBlock(nextBlock);
@@ -395,7 +411,7 @@ public class Simulation
 
         if (isRealBlockDispatcherNext)
         {
-            Logger.RedNewline("Real Block Dispatcher Next " + block);
+            Logger.WarnNewline("Real Block Dispatcher Next \n" + block);
             var linkedBlocks = block.GetLinkedBlocks(this);
             if (linkedBlocks.Count != 1)
             {

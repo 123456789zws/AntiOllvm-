@@ -6,8 +6,13 @@ public class Immediate : RegisterValue
     public Immediate(long v)
     {
         Value = v;
-        
     }
+
+    public override string ToString()
+    {
+        return  Value.ToString("X") ;
+    }
+
     public override object Clone()
     {
         return new Immediate(Value);

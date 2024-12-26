@@ -259,6 +259,98 @@ B.LE            loc_18211C
         {
             return CheckChildDispatcherFeatureWith3Ins(block, context);
         }
+        
+        if (block.instructions.Count==4)
+        {
+            return CheckChildDispatcherFeatureWith4Ins(block, context);
+        }
+        return false;
+    }
+
+    private bool CheckChildDispatcherFeatureWith4Ins(Block block, Simulation simulation)
+    {
+        //MOV             W9, #0xD58FFDA8
+        // CMP             W8, W9
+        // MOV             W9, W8
+        // B.NE            loc_1820A0
+        if (this.CheckChildDispatcherFeatureWith3Ins4MoveCmpB( block, simulation))
+        {
+            return true;
+        }
+        // loc_183468
+        // MOV             W9, #0xF2AF
+        // CMP             W8, W19
+        // MOVK            W9, #0x510C,LSL#16
+        // B.EQ            loc_18330C
+        if (this.CheckChildDispatcherFeatureWith4Ins4MovCmpMovkB( block, simulation))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private bool CheckChildDispatcherFeatureWith4Ins4MovCmpMovkB(Block block, Simulation simulation)
+    {
+        bool hasMov = false;
+        bool hasCmp = false;
+        bool hasBCond = false;
+        string movRegName= "";
+        bool isMOVKSameReg = false;
+        foreach (var instruction in block.instructions)
+        {
+            switch (instruction.Opcode())
+            {
+                case OpCode.MOV:
+                {
+                    var left = instruction.Operands()[0];
+                    var right = instruction.Operands()[1];
+                    if (_multiCompareRegs.Contains(left.registerName) && right.kind == Arm64OperandKind.Immediate
+                        && right.immediateValue != 0)
+                    {
+                        hasMov = true;
+                        movRegName = left.registerName;
+                    }
+                    break;
+                }
+                case OpCode.MOVK:
+                {
+                    var left = instruction.Operands()[0];
+                    var right = instruction.Operands()[1];
+                    if (hasMov && movRegName==left.registerName && right.kind == Arm64OperandKind.Immediate
+                        && right.immediateValue != 0)
+                    {
+                        isMOVKSameReg = true;
+                    }
+                    
+                    break;
+                }
+                case OpCode.CMP:
+                {
+                    var left = instruction.Operands()[0];
+                    if (simulation.Analyzer.GetDispatcherOperandRegisterNames().Contains(left.registerName))
+                    {
+                        hasCmp = true;
+                    }
+                    break;
+                }
+                case OpCode.B_NE:
+                case OpCode.B_EQ:
+                case OpCode.B_GT:
+                case OpCode.B_LE:
+                    //Got Link
+                   var links=  block.GetLinkedBlocks(simulation);
+                    if (IsDispatcherBlock(links[0],simulation) && IsDispatcherBlock(links[1],simulation))
+                    {
+                        hasBCond = true;
+                    }
+                    break;
+            }
+        }
+
+        if (hasBCond && hasCmp && isMOVKSameReg)
+        {
+            return true;
+        }
 
         return false;
     }
