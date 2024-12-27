@@ -20,4 +20,6 @@ public interface IAnalyze
     bool IsRealBlock(Block block, Simulation simulation);
     bool IsRealBlockWithDispatchNextBlock(Block block, Simulation simulation);
     bool IsCSELOperandDispatchRegister(Instruction instruction, Simulation simulation);
+    
+    Config GetConfig();
 }

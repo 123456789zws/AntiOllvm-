@@ -56,5 +56,6 @@ public enum OpCode
     MADD,
     TBNZ,
     CCMP,
+    ADDS,
     NONE,
 }

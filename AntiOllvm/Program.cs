@@ -30,8 +30,8 @@ namespace AntiOllvm
                         }
                         break;
                    
-                    case "-force_no_child_main":
-                        config.force_no_child_main = true;
+                    case "-support_sp":
+                        config.support_sp = true;
                         break;
                     // 根据需要处理更多参数
                     default:
@@ -53,6 +53,7 @@ namespace AntiOllvm
             Config config = new Config();
             config.ida_cfg_path = @"E:\RiderDemo\AntiOllvm\AntiOllvm\cfg_output_0x181fb0.json";
             config.fix_outpath = @"C:\Users\PC5000\PycharmProjects\py_ida\fix.json";
+            config.support_sp = true;
             App.Init(config);
         }
 
@@ -72,7 +73,7 @@ namespace AntiOllvm
             }
             else
             {
-                Console.WriteLine("Usage: AntiOllvm -s <path> ");
+                Console.WriteLine("Usage: AntiOllvm -s <path> [-support_sp]");
             }
         }
     }

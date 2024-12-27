@@ -11,7 +11,12 @@ public class Operand
   public int shiftValue;
   public Arm64ShiftType shiftType;
   public Arm64ConditionCode conditionCode;
-
+  public MemoryOperand memoryOperand;
+  
+  public bool IsZeroRegister()
+  {
+    return registerName=="XZR" || registerName=="WZR";
+  }
   public override string ToString()
   {
     switch (kind)
@@ -22,6 +27,8 @@ public class Operand
         return "Immediate: " + immediateValue;
       case Arm64OperandKind.VectorRegisterElement:
         return "VectorRegisterElement";
+      case Arm64OperandKind.Memory:
+        return "Memory: " + memoryOperand.registerName + " " + memoryOperand.addend;
     }
     return "Unknown";
   }

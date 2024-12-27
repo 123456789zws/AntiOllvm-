@@ -18,7 +18,7 @@ public class SmartCffAnalayer : IAnalyze
     {
         _dispatcherFinder.Init(blocks, simulation);
     }
-
+    
     public bool IsInitBlock(Block block, Simulation simulation)
     {
         return _dispatcherFinder.IsInitBlock(block, simulation);
@@ -47,5 +47,10 @@ public class SmartCffAnalayer : IAnalyze
     public bool IsCSELOperandDispatchRegister(Instruction instruction, Simulation simulation)
     {
         return _dispatcherFinder.IsCselOperandDispatchRegister(instruction, simulation);
+    }
+
+    public Config GetConfig()
+    {
+        return _config;
     }
 }

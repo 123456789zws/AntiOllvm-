@@ -74,8 +74,8 @@ public class Simulation
         Logger.InfoNewline("Start Fix ReadBlock Count is  " + _realBlocks.Count);
         //Order by Address 
         _realBlocks = _realBlocks.OrderBy(x => x.start_address).ToList();
-        
-    
+
+
         foreach (var realBlock in _realBlocks)
         {
             if (realBlock.isFix)
@@ -84,9 +84,8 @@ public class Simulation
             }
 
             realBlock.FixMachineCode(this);
-          
         }
-        
+
         List<Instruction> fixInstructions = new List<Instruction>();
         FixDispatcher(fixInstructions);
         Logger.InfoNewline("Child Dispatcher Count " + _childDispatcherBlocks.Count
@@ -126,10 +125,9 @@ public class Simulation
         {
             foreach (var instruction in block.instructions)
             {
-               
                 if (string.IsNullOrEmpty(instruction.fixmachine_code))
                 {
-                    if (instruction.InstructionSize==8)
+                    if (instruction.InstructionSize == 8)
                     {
                         instruction.SetFixMachineCode("NOP");
                         var nop = Instruction.CreateNOP($"0x{instruction.GetAddress() + 4:X}");
@@ -141,7 +139,6 @@ public class Simulation
                         instruction.SetFixMachineCode("NOP");
                         fixInstructions.Add(instruction);
                     }
-                   
                 }
                 else
                 {
@@ -169,14 +166,14 @@ public class Simulation
                     Logger.RedNewline($"AssignRegisterByInstruction MOV {left.registerName} = {imm} ({imm:X})");
                 }
 
-                if (left.kind==Arm64OperandKind.Register && right.kind==Arm64OperandKind.Register)
+                if (left.kind == Arm64OperandKind.Register && right.kind == Arm64OperandKind.Register)
                 {
                     var leftReg = _regContext.GetRegister(left.registerName);
                     var rightReg = _regContext.GetRegister(right.registerName);
                     leftReg.SetLongValue(rightReg.GetLongValue());
-                    Logger.RedNewline($"AssignRegisterByInstruction MOV {left.registerName} = {right.registerName} ({rightReg.GetLongValue():X})");
+                    Logger.RedNewline(
+                        $"AssignRegisterByInstruction MOV {left.registerName} = {right.registerName} ({rightReg.GetLongValue():X})");
                 }
-               
             }
                 break;
             case "MOVK":
@@ -210,7 +207,7 @@ public class Simulation
                 {
                     //Runnning MOV instruction in Dispatch we need sync this
                     AssignRegisterByInstruction(instruction);
-                  
+
                     break;
                 }
                 case OpCode.B:
@@ -301,7 +298,7 @@ public class Simulation
         throw new Exception("is unknown block \n" + block);
     }
 
-    private void SyncLogicInstruction(Instruction instruction)
+    private void SyncLogicInstruction(Instruction instruction, Block block)
     {
         switch (instruction.Opcode())
         {
@@ -339,7 +336,7 @@ public class Simulation
     {
         foreach (var instruction in block.instructions)
         {
-            SyncLogicInstruction(instruction);
+            SyncLogicInstruction(instruction, block);
         }
     }
 
@@ -381,7 +378,7 @@ public class Simulation
         {
             SyncLogicBlock(block);
         }
-    
+
         var cselInstruction = IsRealBlockHasCSELDispatcher(block);
         if (cselInstruction != null)
         {
@@ -393,9 +390,11 @@ public class Simulation
             var needOperandRegister = cselInstruction.Operands()[0].registerName;
             var operandLeft = cselInstruction.Operands()[1].registerName;
             var left = _regContext.GetRegister(operandLeft);
-            Logger.InfoNewline(" Write left Imm "+left.value);
+            Logger.InfoNewline(" Write left Imm " + left.value);
             _regContext.SetRegister(needOperandRegister, left.value);
             var nextBlock = block.GetLinkedBlocks(this)[0];
+            //Before we find real block we need supply some register value
+            SupplyBlockIfNeed(block, cselInstruction);
             var leftBlock = FindRealBlock(nextBlock);
             Logger.WarnNewline("Block " + block.start_address + " Left  is Link To " + leftBlock.start_address);
             list.Add(leftBlock);
@@ -403,6 +402,7 @@ public class Simulation
             var operandRight = cselInstruction.Operands()[2].registerName;
             var right = _regContext.GetRegister(operandRight);
             _regContext.SetRegister(needOperandRegister, right.value);
+            SupplyBlockIfNeed(block, cselInstruction);
             var rightBlock = FindRealBlock(nextBlock);
             Logger.WarnNewline("Block " + block.start_address + " Right  is Link To " + rightBlock.start_address);
             list.Add(rightBlock);
@@ -415,7 +415,7 @@ public class Simulation
             var linkedBlocks = block.GetLinkedBlocks(this);
             if (linkedBlocks.Count != 1)
             {
-                throw new Exception("Real Block Dispatcher Next block count is not 1");
+                throw new Exception("Real Block Dispatcher Next block count is not 1 branch");
             }
 
             var nextBlock = FindRealBlock(linkedBlocks[0]);
@@ -424,7 +424,7 @@ public class Simulation
         }
 
         Logger.WarnNewline("Real Block  and not dispatcher next" + block);
-        //But we need Check next is dispatcher block?
+        //But we need Check next is dispatcher block
         var links = block.GetLinkedBlocks(this);
         if (links.Count == 0)
         {
@@ -443,6 +443,43 @@ public class Simulation
 
         list.Add(FindRealBlock(links[0]));
         return list;
+    }
+
+    /**
+     * When csel is dispatcher, but it's some register value need supply
+     */
+    private void SupplyBlockIfNeed(Block block, Instruction csel)
+    {
+        // CSEL            W8, W12, W19, EQ
+        // MOVK            W9, #0x94FC,LSL#16  it's sync in  SyncLogicBlock(block);
+        // STR             W8, [SP,#0x330+var_2AC]
+        var index = block.instructions.IndexOf(csel);
+        //Got next instruction
+        for (int i = 0; i < block.instructions.Count; i++)
+        {
+            if (i <= index)
+            {
+                continue;
+            }
+
+            var instruction = block.instructions[i];
+            if (instruction.Opcode() == OpCode.STR)
+            {
+                var dest = instruction.Operands()[1];
+                var src = instruction.Operands()[0];
+                if (dest.kind == Arm64OperandKind.Memory)
+                {
+                    var cselFirstOperand = csel.Operands()[0];
+                    if (cselFirstOperand.registerName == src.registerName)
+                    {
+                        //dynamics supply register value
+                        var reg = _regContext.GetRegister(src.registerName);
+                        var sp = _regContext.GetRegister(dest.memoryOperand.registerName);
+                        // Logger.RedNewline(" Supply Register Value " + src.registerName + " = " + reg.GetLongValue().ToString("X"));
+                    }
+                }
+            }
+        }
     }
 
     public Block FindBlockByAddress(long address)
