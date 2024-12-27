@@ -128,6 +128,7 @@ public class RegisterContext
     {
         long left = GetRegister(leftRegisterName).GetLongValue();
         long right = GetRegister(rightRegisterName).GetLongValue();
+        
         // Logger.InfoNewline("Comparing " + leftRegisterName + " = " + left +"(0x"+left.ToString("X")+")"+ " with " + rightRegisterName + " = " + right + "(0x"+right.ToString("X")+ ")");
         var result = left - right;
         N = result < 0;
@@ -146,5 +147,10 @@ public class RegisterContext
             V = ((left < 0 && right > 0 && result > 0) ||
                  (left > 0 && right < 0 && result < 0)); // Overflow flag
         }
+    }
+
+    public SPRegister GetSpRegister()
+    {
+        return (_registers.Find(register => register.name == "SP")!.value as SPRegister)!;
     }
 }

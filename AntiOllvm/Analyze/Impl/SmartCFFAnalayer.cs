@@ -29,6 +29,7 @@ public class SmartCffAnalayer : IAnalyze
         return _dispatcherFinder.GetDispatcherOperandRegisterNames();
     }
 
+
     public bool IsDispatcherBlock(Block link, Simulation simulation)
     {   
         return _dispatcherFinder.IsDispatcherBlock(link,simulation);

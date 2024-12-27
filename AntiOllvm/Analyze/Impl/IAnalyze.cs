@@ -16,6 +16,8 @@ public interface IAnalyze
     
     
     List<string> GetDispatcherOperandRegisterNames();
+    
+    
     bool IsDispatcherBlock(Block link, Simulation simulation);
     bool IsRealBlock(Block block, Simulation simulation);
     bool IsRealBlockWithDispatchNextBlock(Block block, Simulation simulation);

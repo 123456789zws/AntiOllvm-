@@ -35,6 +35,10 @@ public static class InstructionsExtension
             {
                 return "B.NE";
             }
+            case OpCode.B_GT:
+            {
+                return "B.GT";
+            }
         }
         throw new Exception(" FormatOpcode not support " + opCode);
     }
@@ -175,6 +179,10 @@ public static class InstructionsExtension
                 case Arm64ConditionCode.NE:
                 {
                     return OpCode.B_NE;
+                }
+                case Arm64ConditionCode.GT:
+                {
+                    return OpCode.B_GT;
                 }
             }
         }

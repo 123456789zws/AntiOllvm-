@@ -152,6 +152,21 @@ public class Simulation
     {
         switch (instruction.mnemonic)
         {
+            case "LDR":
+            {
+                var dest = instruction.Operands()[0];
+                var src = instruction.Operands()[1];
+                if (src is { kind: Arm64OperandKind.Memory, memoryOperand.registerName: "SP" })
+                {
+                    var sp = _regContext.GetRegister(src.memoryOperand.registerName).value as SPRegister;
+                    var imm = sp.Get(src.memoryOperand.addend);
+                    var reg = _regContext.GetRegister(dest.registerName);
+                    reg.SetLongValue(imm);
+                    Logger.RedNewline($"AssignRegisterByInstruction LDR {dest.registerName} = {imm} ({imm:X})");
+                }
+
+                break;
+            }
             case "MOV":
             {
                 //Assign register
@@ -196,6 +211,11 @@ public class Simulation
         {
             switch (instruction.Opcode())
             {
+                case OpCode.LDR:
+                {
+                    AssignRegisterByInstruction(instruction);
+                    break;
+                }
                 case OpCode.MOVK:
                 {
                     AssignRegisterByInstruction(instruction);
@@ -225,6 +245,14 @@ public class Simulation
                 {
                     var left = instruction.Operands()[0];
                     var right = instruction.Operands()[1];
+                    //Dispatcher value not zero 
+                    var leftImm = _regContext.GetRegister(left.registerName).GetLongValue();
+                    var rightImm = _regContext.GetRegister(right.registerName).GetLongValue();
+                    if (leftImm == 0 || rightImm == 0)
+                    {
+                        throw new Exception(" is error CMP value is zero");
+                    }
+
                     _regContext.Compare(left.registerName, right.registerName);
                     _lastCompareIns = instruction;
                     break;
@@ -411,29 +439,35 @@ public class Simulation
 
         if (isRealBlockDispatcherNext)
         {
-            Logger.WarnNewline("Real Block Dispatcher Next \n" + block);
             var linkedBlocks = block.GetLinkedBlocks(this);
             if (linkedBlocks.Count != 1)
-            {
-                throw new Exception("Real Block Dispatcher Next block count is not 1 branch");
+            {  
+                Logger.WarnNewline("Real Block will be  Dispatcher Next with two bransh \n" + block);
+                var next = FindRealBlock(linkedBlocks[0]);
+                list.Add(next);
+                next = FindRealBlock(linkedBlocks[1]);
+                list.Add(next);
+                return list;
             }
-
+            Logger.WarnNewline("Real Block Dispatcher Next \n" + block);
             var nextBlock = FindRealBlock(linkedBlocks[0]);
             list.Add(nextBlock);
             return list;
         }
 
-        Logger.WarnNewline("Real Block  and not dispatcher next" + block);
         //But we need Check next is dispatcher block
         var links = block.GetLinkedBlocks(this);
         if (links.Count == 0)
         {
+            Logger.WarnNewline("Real Block is end block " + block);
             return list;
         }
 
-        Logger.WarnNewline("Real Block  and not dispatcher next " + block);
         if (links.Count == 2)
-        {
+        {   
+            Logger.WarnNewline(" Real Block  and not dispatcher next with two bransh "
+            +"  left is " + links[0].start_address + " right is " + links[1].start_address +"\n"+block);
+            
             var next = FindRealBlock(links[0]);
             list.Add(next);
             next = FindRealBlock(links[1]);
@@ -441,6 +475,7 @@ public class Simulation
             return list;
         }
 
+        Logger.WarnNewline("Real Block  and not dispatcher next with one bransh " + block);
         list.Add(FindRealBlock(links[0]));
         return list;
     }
@@ -474,8 +509,11 @@ public class Simulation
                     {
                         //dynamics supply register value
                         var reg = _regContext.GetRegister(src.registerName);
-                        var sp = _regContext.GetRegister(dest.memoryOperand.registerName);
-                        // Logger.RedNewline(" Supply Register Value " + src.registerName + " = " + reg.GetLongValue().ToString("X"));
+                        var sp = _regContext.GetRegister(dest.memoryOperand.registerName).value as SPRegister;
+                        Logger.RedNewline(" Supply Register Value " + src.registerName + " = " +
+                                          reg.GetLongValue().ToString("X")
+                                          + " offset is  " + dest.memoryOperand.addend);
+                        sp?.Put(dest.memoryOperand.addend, reg.GetLongValue());
                     }
                 }
             }

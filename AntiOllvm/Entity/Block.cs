@@ -82,7 +82,15 @@ public class Block
         var sb = new StringBuilder();
         foreach (var VARIABLE in instructions)
         {
-            sb.Append(VARIABLE.address + "   " + VARIABLE.mnemonic + " " + VARIABLE.operands_str + "\n");
+            if (!string.IsNullOrEmpty(VARIABLE.fixmachine_code))
+            {
+                
+                sb.Append(VARIABLE.address + "   "+   VARIABLE.fixmachine_code + "\n");
+            }
+            else
+            {
+                sb.Append(VARIABLE.address + "   " + VARIABLE.mnemonic + " " + VARIABLE.operands_str + "\n");
+            }
         }
 
         return $"[Block] {start_address} \n{sb}";

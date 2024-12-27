@@ -109,71 +109,6 @@ public static class BlockExtension
     }
 
 
-    private static int FindOperandDispatchInstructionIndex(this Block block, Simulation simulation)
-    {
-        for (int i = 0; i < block.instructions.Count(); i++)
-        {
-            var instruction = block.instructions[i];
-            if (instruction.Opcode() == OpCode.MOV)
-            {
-                var first = instruction.Operands()[0];
-                var second = instruction.Operands()[1];
-                if (simulation.Analyzer.GetDispatcherOperandRegisterNames().Contains(first.registerName) &&
-                    second.kind == Arm64OperandKind.Immediate)
-                {
-                    var l = second.immediateValue;
-                    if (l.ToString("X").Length == 8)
-                    {
-                        return i;
-                    }
-                }
-            }
-        }
-
-
-        return -1;
-    }
-
-    public static bool CheckCESLAfterMove(this Block block, int CSELindex, Simulation simulation)
-    {
-        var nextIns = block.instructions[CSELindex + 1];
-        if (nextIns.Opcode() == OpCode.MOVK || nextIns.Opcode() == OpCode.MOV)
-        {
-            var operand = nextIns.Operands()[1];
-            if (operand.kind == Arm64OperandKind.Immediate)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static bool IsJumpToSameBlock(this Block block, Block main, Simulation simulation)
-    {
-        var links = block.GetLinkedBlocks(simulation);
-        if (links.Count == 0)
-        {
-            return false;
-        }
-
-        if (links.Count() == 1)
-        {
-            if (block.RealChilds is { Count: 1 })
-            {
-                var link = links[0];
-                if (link.GetStartAddress() == block.RealChilds[0].GetStartAddress())
-                {
-                    return true;
-                }
-
-                return false;
-            }
-        }
-
-        return false;
-    }
-
     private static bool CheckRealBlockUseNextBlockJumpByOneIns(this Block block, Simulation simulation)
     {
         if (block.instructions.Count == 1)
@@ -222,6 +157,22 @@ public static class BlockExtension
         return false;
     }
 
+
+    private static bool CanFixByChangeLocation(this Block block, Simulation simulation)
+    {
+        var lastIns = block.instructions[^1];
+        if (lastIns.Opcode() != OpCode.MOV && lastIns.Opcode() != OpCode.MOVK)
+        {
+            var preIns = block.instructions[^2];
+            if (preIns.Opcode() == OpCode.MOV || preIns.Opcode() == OpCode.MOVK)
+            {   
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static void FixJumpToDispatchButNotBIns(this Block block, Simulation simulation)
     {
         //there have many case
@@ -244,6 +195,7 @@ public static class BlockExtension
                 Logger.WarnNewline(" FixJumpToDispatchButNotBIns  when mov or movk is last  " + block);
                 return;
             }
+
             Logger.RedNewline(" FixJumpToDispatchButNotBIns  in change ins location !!!   " + block);
             var ins = block.instructions[insIndex];
             for (int i = 0; i < block.instructions.Count; i++)
@@ -256,13 +208,14 @@ public static class BlockExtension
                     item.fixmachine_byteCode = item.machine_code;
                 }
             }
+
             //Remove dispatch instruction
             block.instructions.RemoveAt(insIndex);
             var lastIns = block.instructions[^1];
 
             //Add B instruction to Last instruction
-            ins.fixmachine_code =
-                AssemBuildHelper.BuildJump(ins.FormatOpcode(OpCode.B), block.RealChilds[0].GetStartAddress());
+            ins.SetFixMachineCode(AssemBuildHelper.BuildJump(ins.FormatOpcode(OpCode.B),
+                block.RealChilds[0].GetStartAddress()));
             ins.operands_str = $"0x{block.RealChilds[0].GetStartAddress().ToString("X")}";
             ins.mnemonic = ins.FormatOpcode(OpCode.B);
             ins.address = $"0x{(lastIns.GetAddress() + 4).ToString("X")}";
@@ -272,6 +225,7 @@ public static class BlockExtension
             {
                 block.instructions.Add(Instruction.CreateNOP($"0x{ins.GetAddress() + 4:X}"));
             }
+
             return;
         }
 
@@ -327,16 +281,42 @@ public static class BlockExtension
             var movIns = block.instructions[index + 1];
             if (movIns.Opcode() == OpCode.MOVK)
             {
-                Logger.WarnNewline("FixMachineCodeByCFF_CSELBlock  with MOVK Dispatcher \n" + block);
                 FixCSEL(block, block.CFF_CSEL);
                 //NOP End Ins
                 lastIns.SetFixMachineCode("NOP");
+                Logger.WarnNewline("FixMachineCodeByCFF_CSELBlock  with MOVK Dispatcher \n" + block);
                 return;
             }
         }
 
-        Logger.WarnNewline(" it's unKnow FixMachineCodeByCFF_CSELBlock  \n" + block);
-        throw new Exception(" not Impl " + block.start_address);
+        if (index + 2 == block.instructions.Count - 1)
+        {
+            //CSEL            W8, W12, W19, EQ
+            // MOVK            W9, #0x94FC,LSL#16
+            // STR             W8, [SP,#0x330+var_2AC]
+            var movIns = block.instructions[index + 1];
+            if (movIns.Opcode() == OpCode.MOVK)
+            {
+                //the last is not B ins we need change this location first
+                var lastInsIndex = block.instructions.Count - 1;
+                int offset = (lastInsIndex - index) * 4;
+                lastIns.address = $"0x{(lastIns.GetAddress() - offset).ToString("X")}";
+
+                block.instructions.RemoveAt(lastInsIndex);
+                block.instructions.Insert(index, lastIns);
+                block.CFF_CSEL.address = $"0x{(block.CFF_CSEL.GetAddress() + 4).ToString("X")}";
+                movIns.address = $"0x{(movIns.GetAddress() + 4).ToString("X")}";
+                // Logger.WarnNewline("FixMachineCodeByCFF_CSELBlock  with MOVK Dispatcher \n" + block);
+                FixCSEL(block, block.CFF_CSEL);
+
+                return;
+            }
+        }
+
+        Logger.RedNewline(" it's unKnow FixMachineCodeByCFF_CSELBlock  \n" + block.start_address
+                                                                           + "CSEL Index " + index + " Count " +
+                                                                           block.instructions.Count);
+        throw new Exception(" Fix CSEL Not Impl in  " + block.start_address);
     }
 
     private static void FixMachineCodeByDispatcherNextBlock(this Block block, Simulation simulation)
@@ -394,7 +374,7 @@ public static class BlockExtension
     public static void FixMachineCode(this Block block, Simulation simulation)
     {
         block.isFix = true;
-        Logger.RedNewline("Start Fix RealBlock " + block);
+        Logger.InfoNewline("Start Fix RealBlock " + block);
         if (block.HasCFF_CSEL())
         {
             FixMachineCodeByCFF_CSELBlock(block, simulation);
