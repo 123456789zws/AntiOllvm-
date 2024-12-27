@@ -21,7 +21,6 @@
     - [4. Rebuild CFG in IDA](#4-rebuild-cfg-in-ida)
 - [How To Build](#how-to-build)
 - [Additional Resources](#additional-resources)
-- [License](#license)
 
 ## Features
 
