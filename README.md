@@ -1,6 +1,5 @@
 # AntiOllvm
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-Arm64-red.svg)
 ![Language](https://img.shields.io/badge/language-C%23-orange.svg)
 
