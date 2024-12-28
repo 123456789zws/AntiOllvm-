@@ -66,7 +66,7 @@ Execute the AntiOllvm tool with the CFG output.
 Generate the machine code using the provided Python script. This script relies on the Keystone Engine, so ensure it's installed.
 ####  1. Install Keystone Engine
 ```shell
-pip install keystone
+pip install keystone-engine
 ```
 #### 2. Edit gen_machine_code.py:
 ```python
