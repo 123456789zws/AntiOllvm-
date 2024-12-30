@@ -229,26 +229,11 @@ public static class BlockExtension
             return;
         }
 
-        if (CanFixByChangeLocation(block, simulation))
-        {
-            Logger.WarnNewline("FixJumpToDispatchButNotBIns  CanFixByChangeLocation  " + block);
-            var preIns = block.instructions[^2];
-            var lastIns = block.instructions[^1];
-            block.instructions.Remove(preIns);
-            var pre_addr = preIns.address;
-            var last_addr=lastIns.address;
-            lastIns.address = pre_addr;
-            preIns.address = last_addr;
-            preIns.fixmachine_code=AssemBuildHelper.BuildJump(preIns.FormatOpcode(OpCode.B),
-                block.RealChilds[0].GetStartAddress());
-            block.instructions.Insert(block.instructions.Count,preIns);
-            Logger.WarnNewline("FixJumpToDispatchButNotBIns   FixByChangeLocation "+block);
-            return;
-        }
 
         var nextBlock = block.GetLinkedBlocks(simulation)[0];
         Logger.WarnNewline("use next Dispatcher to Jump " + block.start_address);
         //Fix
+
         var firstIns = nextBlock.instructions[0];
         if (!string.IsNullOrEmpty(firstIns.fixmachine_code))
         {
@@ -272,9 +257,9 @@ public static class BlockExtension
                 instruction.SetFixMachineCode("NOP");
             }
         }
-        return;
 
-        throw new Exception(" FixJumpToDispatchButNotBIns  Next Block is not Dispatcher  can't fix !!! " + block);
+        Logger.WarnNewline("FixJumpToDispatchButNotBIns  use next Block !! \n" + block);
+        return;
     }
 
     private static void FixMachineCodeByCFF_CSELBlock(this Block block, Simulation simulation)
@@ -325,7 +310,6 @@ public static class BlockExtension
                 movIns.address = $"0x{(movIns.GetAddress() + 4).ToString("X")}";
                 // Logger.WarnNewline("FixMachineCodeByCFF_CSELBlock  with MOVK Dispatcher \n" + block);
                 FixCSEL(block, block.CFF_CSEL);
-
                 return;
             }
         }
@@ -333,6 +317,28 @@ public static class BlockExtension
         Logger.RedNewline(" it's unKnow FixMachineCodeByCFF_CSELBlock  \n" + block.start_address
                                                                            + "CSEL Index " + index + " Count " +
                                                                            block.instructions.Count);
+
+
+        if (lastIns.IsJumpToDispatcher(simulation))
+        {
+            for (int i = 0; i < block.instructions.Count; i++)
+            {
+                if (i <= index || i==block.instructions.Count-1)
+                {
+                    continue;
+                }
+                var item = block.instructions[i];
+                item.address = $"0x{(item.GetAddress() - item.InstructionSize).ToString("X")}";
+                item.fixmachine_byteCode = item.machine_code;
+            }
+            block.instructions.Remove(block.CFF_CSEL);
+            block.CFF_CSEL.setAddress(lastIns.GetAddress()-4);
+            block.instructions.Insert( block.instructions.Count-1, block.CFF_CSEL);
+            FixCSEL( block, block.CFF_CSEL);
+            Logger.WarnNewline("FixMachineCodeByCFF_CSELBlock  with Change Location!!! \n" + block);
+            return;
+        }
+            
         throw new Exception(" Fix CSEL Not Impl in  " + block.start_address);
     }
 
@@ -494,7 +500,7 @@ public static class BlockExtension
             if (lastIns.Opcode() == OpCode.MOV || lastIns.Opcode() == OpCode.MOVK)
             {
                 var operand = lastIns.Operands()[0];
-                if (simulation.Analyzer.GetDispatcherOperandRegisterNames().Contains(operand.registerName))
+                if (simulation.Analyzer.GetLeftDispatcherOperandRegisterNames().Contains(operand.registerName))
                 {
                     return lastIns;
                 }
@@ -507,7 +513,7 @@ public static class BlockExtension
             if (preIns.Opcode() == OpCode.MOV || preIns.Opcode() == OpCode.MOVK)
             {
                 var operand = preIns.Operands()[0];
-                if (simulation.Analyzer.GetDispatcherOperandRegisterNames().Contains(operand.registerName))
+                if (simulation.Analyzer.GetLeftDispatcherOperandRegisterNames().Contains(operand.registerName))
                 {
                     return preIns;
                 }

@@ -263,4 +263,9 @@ public class Instruction
         ins.SetFixMachineCode("NOP");
         return ins;
     }
+
+    public void setAddress(long getAddress)
+    {
+        address = "0x" + getAddress.ToString("X");
+    }
 }

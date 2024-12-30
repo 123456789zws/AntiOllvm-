@@ -7,6 +7,7 @@ namespace AntiOllvm.Extension;
 
 public static class SmartDispatcherFinderExtension
 {
+    
     public static bool CheckChildDispatcherFeatureWith3Ins4CMPMOVBCond(this SmartDispatcherFinder finder,
         Block block, Simulation simulation)
     {
@@ -159,7 +160,8 @@ public static class SmartDispatcherFinderExtension
                 case OpCode.CMP:
                     var leftCmp = instruction.Operands()[0];
                     var rightCmp = instruction.Operands()[1];
-                    if (finder._leftCompareRegs.Contains(leftCmp.registerName))
+                    if (finder.IsCompareRegister(leftCmp.registerName)
+                        && finder.IsCompareRegister(rightCmp.registerName))
                     {
                         //Get is immediate value
                         var leftValue = simulation.RegContext.GetRegister(leftCmp.registerName).GetLongValue();
@@ -168,7 +170,8 @@ public static class SmartDispatcherFinderExtension
                             hasCmp = true;
                         }
                     }
-
+                    
+                   
                     break;
                 case OpCode.B_NE:
                 case OpCode.B_EQ:
@@ -237,8 +240,7 @@ public static class SmartDispatcherFinderExtension
                 case OpCode.CMP:
                     var left = instruction.Operands()[0];
                     var right = instruction.Operands()[1];
-                    if (finder._leftCompareRegs.Contains(left.registerName)
-                        &&finder._rightCompareRegs.Contains(right.registerName))
+                    if (finder.IsCompareRegister( left.registerName) && finder.IsCompareRegister(right.registerName))
                     {
                         //Get is immediate value
                         var leftValue = simulation.RegContext.GetRegister(left.registerName).GetLongValue();
@@ -249,6 +251,10 @@ public static class SmartDispatcherFinderExtension
                         }
                     }
 
+                    if (finder.IsCompareRegister(left.registerName))
+                    {
+                        
+                    }
                     break;
                 case OpCode.B_NE:
                 case OpCode.B_EQ:

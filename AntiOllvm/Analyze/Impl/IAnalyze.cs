@@ -15,8 +15,8 @@ public interface IAnalyze
     bool IsInitBlock(Block block,Simulation simulation);
     
     
-    List<string> GetDispatcherOperandRegisterNames();
-    
+    List<string> GetLeftDispatcherOperandRegisterNames();
+    List<string> GetRightDispatcherOperandRegisterNames();
     
     bool IsDispatcherBlock(Block link, Simulation simulation);
     bool IsRealBlock(Block block, Simulation simulation);

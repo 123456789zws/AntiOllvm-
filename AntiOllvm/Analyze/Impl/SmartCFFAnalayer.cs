@@ -24,9 +24,14 @@ public class SmartCffAnalayer : IAnalyze
         return _dispatcherFinder.IsInitBlock(block, simulation);
     }
 
-    public List<string> GetDispatcherOperandRegisterNames()
+    public List<string> GetLeftDispatcherOperandRegisterNames()
     {
         return _dispatcherFinder.GetDispatcherOperandRegisterNames();
+    }
+
+    public List<string> GetRightDispatcherOperandRegisterNames()
+    {
+        return _dispatcherFinder.GetRightCompareRegs();
     }
 
 

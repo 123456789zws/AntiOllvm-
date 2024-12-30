@@ -57,5 +57,7 @@ public enum OpCode
     TBNZ,
     CCMP,
     ADDS,
+    CSET,
+    TST,
     NONE,
 }

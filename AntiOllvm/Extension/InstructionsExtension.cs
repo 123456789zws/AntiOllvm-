@@ -148,6 +148,8 @@ public static class InstructionsExtension
             "TBNZ"  => OpCode.TBNZ,
             "CCMP"  => OpCode.CCMP,
             "ADDS"  => OpCode.ADDS,
+            "CSET"  => OpCode.CSET,
+            "TST"   => OpCode.TST,
             _ => throw new Exception("Unknown mnemonic: " + mnemonic)
         };
     }

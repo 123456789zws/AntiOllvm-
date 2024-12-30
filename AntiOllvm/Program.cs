@@ -51,7 +51,7 @@ namespace AntiOllvm
         public static void Test()
         {
             Config config = new Config();
-            config.ida_cfg_path = @"E:\RiderDemo\AntiOllvm\AntiOllvm\cfg_output_0x181fb0.json";
+            config.ida_cfg_path = @"E:\RiderDemo\AntiOllvm\AntiOllvm\cfg_output_0x181aec.json";
             config.fix_outpath = @"C:\Users\PC5000\PycharmProjects\py_ida\fix.json";
             config.support_sp = true;
             App.Init(config);

@@ -413,12 +413,10 @@ public class Simulation
             //Mark this when we fixMachineCode 
             block.CFF_CSEL = cselInstruction;
 
-            Logger.WarnNewline("block has CSEL Dispatcher " + block);
             _regContext.SnapshotRegisters(block.start_address);
             var needOperandRegister = cselInstruction.Operands()[0].registerName;
             var operandLeft = cselInstruction.Operands()[1].registerName;
             var left = _regContext.GetRegister(operandLeft);
-            Logger.InfoNewline(" Write left Imm " + left.value);
             _regContext.SetRegister(needOperandRegister, left.value);
             var nextBlock = block.GetLinkedBlocks(this)[0];
             //Before we find real block we need supply some register value

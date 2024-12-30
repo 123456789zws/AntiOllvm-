@@ -21,7 +21,17 @@ public class SmartDispatcherFinder
     public List<string> _rightCompareRegs = new();
     private List<Block> _multiDispatcher = new();
     private List<Block> _childDispatcher = new();
+    private List<Block> _initDispatcher = new();
 
+    public bool IsCompareRegister(string reg)
+    {
+        if (_leftCompareRegs.Contains(reg) || _rightCompareRegs.Contains(reg))
+        {
+            return true;
+        }
+
+        return false;
+    }
     private bool CheckDispatcherFeatureWithTwoInstruction(Block block, string regName)
     {
         if (block.instructions.Count == 2)
@@ -192,6 +202,12 @@ B.LE            loc_18211C
                     {
                         _leftCompareRegs.Add(compareReg);
                     }
+
+                    if (!_initDispatcher.Contains(initDispatcher))
+                    {
+                        _initDispatcher.Add(initDispatcher);
+                    }
+                   
                 }
             }
             else
@@ -213,11 +229,17 @@ B.LE            loc_18211C
                                                                              initDispatcher.start_address
                                                                              + " compareRegister is  " + compareReg);
                             _multiDispatcher.Add(dispatcherBlock);
+                            //Init Right CompareRegister
+                            
                         }
 
                         if (!_leftCompareRegs.Contains(compareReg))
                         {
                             _leftCompareRegs.Add(compareReg);
+                        }
+                        if (!_initDispatcher.Contains(initDispatcher))
+                        {
+                            _initDispatcher.Add(initDispatcher);
                         }
                     }
                 }
@@ -232,33 +254,46 @@ B.LE            loc_18211C
         var findDispatchersOrder =
             findDispatchers.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value).ToList();
         // var initBlock = ;
+
         _initBlock = _simulation.FindBlockByAddress(findDispatchersOrder[0].Key);
         //init rightCompareRegs
         var movRegs = new List<string>();
         var movkRegs = new List<string>();
-        foreach (var ins in _initBlock.instructions)
+        foreach (var block in _initDispatcher)
         {
-            if (ins.Opcode() == OpCode.MOV)
+            foreach (var ins in block.instructions)
             {
-                var left = ins.Operands()[0];
-                var right = ins.Operands()[1];
-                if (right.kind == Arm64OperandKind.Immediate && right.immediateValue != 0)
+                if (ins.Opcode() == OpCode.MOV)
                 {
-                    movRegs.Add(left.registerName);
+                    var left = ins.Operands()[0];
+                    var right = ins.Operands()[1];
+                    if (right.kind == Arm64OperandKind.Immediate && right.immediateValue != 0
+                        && left.registerName.StartsWith("W"))
+                    {
+                        if (!movRegs.Contains(left.registerName))
+                        {
+                            movRegs.Add(left.registerName);
+                        }
+                        
+                    }
                 }
-            }
 
-            if (ins.Opcode() == OpCode.MOVK)
-            {
-                var left = ins.Operands()[0];
-                var right = ins.Operands()[1];
-                if (right.kind == Arm64OperandKind.Immediate && right.immediateValue != 0)
+                if (ins.Opcode() == OpCode.MOVK)
                 {
-                    movkRegs.Add(left.registerName);
+                    var left = ins.Operands()[0];
+                    var right = ins.Operands()[1];
+                    if (right.kind == Arm64OperandKind.Immediate && right.immediateValue != 0
+                        && left.registerName.StartsWith("W"))
+                    {
+                        if (!movkRegs.Contains(left.registerName))
+                        {
+                            movkRegs.Add(left.registerName);
+                        }
+                    }
                 }
             }
         }
-
+        
         foreach (var VARIABLE in movkRegs)
         {
             if (movRegs.Contains(VARIABLE))
@@ -269,7 +304,7 @@ B.LE            loc_18211C
                 }
             }
         }
-
+        Logger.InfoNewline("Left Compare Register is " + string.Join(",", _leftCompareRegs));
         Logger.InfoNewline("Right Compare Register is " + string.Join(",", _rightCompareRegs));
     }
 
