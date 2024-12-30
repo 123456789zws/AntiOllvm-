@@ -165,7 +165,7 @@ public static class BlockExtension
         {
             var preIns = block.instructions[^2];
             if (preIns.Opcode() == OpCode.MOV || preIns.Opcode() == OpCode.MOVK)
-            {   
+            {
                 return true;
             }
         }
@@ -229,6 +229,23 @@ public static class BlockExtension
             return;
         }
 
+        if (CanFixByChangeLocation(block, simulation))
+        {
+            Logger.WarnNewline("FixJumpToDispatchButNotBIns  CanFixByChangeLocation  " + block);
+            var preIns = block.instructions[^2];
+            var lastIns = block.instructions[^1];
+            block.instructions.Remove(preIns);
+            var pre_addr = preIns.address;
+            var last_addr=lastIns.address;
+            lastIns.address = pre_addr;
+            preIns.address = last_addr;
+            preIns.fixmachine_code=AssemBuildHelper.BuildJump(preIns.FormatOpcode(OpCode.B),
+                block.RealChilds[0].GetStartAddress());
+            block.instructions.Insert(block.instructions.Count,preIns);
+            Logger.WarnNewline("FixJumpToDispatchButNotBIns   FixByChangeLocation "+block);
+            return;
+        }
+
         var nextBlock = block.GetLinkedBlocks(simulation)[0];
         Logger.WarnNewline("use next Dispatcher to Jump " + block.start_address);
         //Fix
@@ -255,7 +272,7 @@ public static class BlockExtension
                 instruction.SetFixMachineCode("NOP");
             }
         }
-
+        return;
 
         throw new Exception(" FixJumpToDispatchButNotBIns  Next Block is not Dispatcher  can't fix !!! " + block);
     }
