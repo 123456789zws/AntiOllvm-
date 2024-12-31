@@ -19,7 +19,7 @@ public class Simulation
     private IDACFG _idacfg;
 
 
-    private List<Block> _childDispatcherBlocks = new List<Block>();
+    private List<Block> _dispatcherBlocks = new List<Block>();
 
     private List<Block> _realBlocks = new List<Block>();
 
@@ -88,7 +88,7 @@ public class Simulation
 
         List<Instruction> fixInstructions = new List<Instruction>();
         FixDispatcher(fixInstructions);
-        Logger.InfoNewline("Child Dispatcher Count " + _childDispatcherBlocks.Count
+        Logger.InfoNewline("Child Dispatcher Count " + _dispatcherBlocks.Count
                                                      + " RealBlock Fix Start " + fixInstructions.Count);
 
         foreach (var realBlock in _realBlocks)
@@ -121,7 +121,7 @@ public class Simulation
 
     private void FixDispatcher(List<Instruction> fixInstructions)
     {
-        foreach (var block in _childDispatcherBlocks)
+        foreach (var block in _dispatcherBlocks)
         {
             foreach (var instruction in block.instructions)
             {
@@ -146,6 +146,7 @@ public class Simulation
                 }
             }
         }
+        
     }
 
     private void AssignRegisterByInstruction(Instruction instruction)
@@ -304,9 +305,9 @@ public class Simulation
         {
             Logger.InfoNewline("is Dispatcher block " + block.start_address);
             var next = RunDispatcherBlock(block);
-            if (!_childDispatcherBlocks.Contains(block))
+            if (!_dispatcherBlocks.Contains(block))
             {
-                _childDispatcherBlocks.Add(block);
+                _dispatcherBlocks.Add(block);
             }
 
             return FindRealBlock(next);
@@ -326,7 +327,8 @@ public class Simulation
         throw new Exception("is unknown block \n" + block);
     }
 
-    private void SyncLogicInstruction(Instruction instruction, Block block)
+    private void SyncLogicInstruction(Instruction instruction, Block block,
+        List<string> mov,List<string>movk)
     {
         switch (instruction.Opcode())
         {
@@ -342,6 +344,11 @@ public class Simulation
                     var imm = right.immediateValue;
                     register.SetLongValue(imm);
                     Logger.RedNewline($"Update  MOV {left.registerName} = {imm} ({imm:X})");
+                    if (!mov.Contains(left.registerName))
+                    {
+                        mov.Add(left.registerName);
+                    }
+                   
                 }
 
                 break;
@@ -355,16 +362,39 @@ public class Simulation
                 var v = MathHelper.CalculateMOVK(reg.GetLongValue(), imm, shift, instruction.Operands()[2].shiftValue);
                 reg.SetLongValue(v);
                 Logger.InfoNewline($"Update MOVK {dest.registerName} = {imm} ({imm:X})");
+                if (!movk.Contains(dest.registerName))
+                {
+                    movk.Add(dest.registerName);
+                }
                 break;
             }
         }
+        
+        //when update compare register  we need sync right compare register
+
+     
     }
 
     private void SyncLogicBlock(Block block)
     {
+        var mov = new List<string>();
+        var movk = new List<string>();
         foreach (var instruction in block.instructions)
         {
-            SyncLogicInstruction(instruction, block);
+            SyncLogicInstruction(instruction, block,mov,movk);
+        }
+        foreach (var VARIABLE in movk)
+        {
+            if (mov.Contains(VARIABLE))
+            {   
+                    
+                if (!_analyzer.GetRightDispatcherOperandRegisterNames().Contains(VARIABLE))
+                {
+                    _analyzer.GetRightDispatcherOperandRegisterNames().Add(VARIABLE);
+                    Logger.WarnNewline(" Sync Right Dispatcher Operand Register Name " + VARIABLE);
+                }
+            }
+               
         }
     }
 
@@ -410,22 +440,26 @@ public class Simulation
         var cselInstruction = IsRealBlockHasCSELDispatcher(block);
         if (cselInstruction != null)
         {
+            
             //Mark this when we fixMachineCode 
             block.CFF_CSEL = cselInstruction;
-
+            Logger.WarnNewline("Real Block is CFF_CSEL_Expression " + block);
             _regContext.SnapshotRegisters(block.start_address);
             var needOperandRegister = cselInstruction.Operands()[0].registerName;
             var operandLeft = cselInstruction.Operands()[1].registerName;
+            var operandRight = cselInstruction.Operands()[2].registerName;
+            Logger.RedNewline("Cur Left imm is " + _regContext.GetRegister(operandLeft).GetIntValue() +
+                              " Right imm is " + _regContext.GetRegister(operandRight).GetIntValue());  
             var left = _regContext.GetRegister(operandLeft);
             _regContext.SetRegister(needOperandRegister, left.value);
             var nextBlock = block.GetLinkedBlocks(this)[0];
             //Before we find real block we need supply some register value
+            
             SupplyBlockIfNeed(block, cselInstruction);
             var leftBlock = FindRealBlock(nextBlock);
             Logger.WarnNewline("Block " + block.start_address + " Left  is Link To " + leftBlock.start_address);
             list.Add(leftBlock);
             _regContext.RestoreRegisters(block.start_address);
-            var operandRight = cselInstruction.Operands()[2].registerName;
             var right = _regContext.GetRegister(operandRight);
             _regContext.SetRegister(needOperandRegister, right.value);
             SupplyBlockIfNeed(block, cselInstruction);
@@ -533,7 +567,7 @@ public class Simulation
 
     public bool IsDispatcherBlock(Block link)
     {
-        if (_childDispatcherBlocks.Contains(link))
+        if (_dispatcherBlocks.Contains(link))
         {
             return true;
         }

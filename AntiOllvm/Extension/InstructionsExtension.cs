@@ -150,6 +150,8 @@ public static class InstructionsExtension
             "ADDS"  => OpCode.ADDS,
             "CSET"  => OpCode.CSET,
             "TST"   => OpCode.TST,
+            "STURB" => OpCode.STURB,
+            "LDURB" => OpCode.LDURB,    
             _ => throw new Exception("Unknown mnemonic: " + mnemonic)
         };
     }

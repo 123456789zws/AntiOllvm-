@@ -59,5 +59,7 @@ public enum OpCode
     ADDS,
     CSET,
     TST,
+    LDURB,
+    STURB,
     NONE,
 }

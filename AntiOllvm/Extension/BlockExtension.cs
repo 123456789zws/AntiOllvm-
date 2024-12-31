@@ -323,22 +323,51 @@ public static class BlockExtension
         {
             for (int i = 0; i < block.instructions.Count; i++)
             {
-                if (i <= index || i==block.instructions.Count-1)
+                if (i <= index || i == block.instructions.Count - 1)
                 {
                     continue;
                 }
+
                 var item = block.instructions[i];
                 item.address = $"0x{(item.GetAddress() - item.InstructionSize).ToString("X")}";
                 item.fixmachine_byteCode = item.machine_code;
             }
+
             block.instructions.Remove(block.CFF_CSEL);
-            block.CFF_CSEL.setAddress(lastIns.GetAddress()-4);
-            block.instructions.Insert( block.instructions.Count-1, block.CFF_CSEL);
-            FixCSEL( block, block.CFF_CSEL);
+            block.CFF_CSEL.setAddress(lastIns.GetAddress() - 4);
+            block.instructions.Insert(block.instructions.Count - 1, block.CFF_CSEL);
+            FixCSEL(block, block.CFF_CSEL);
             Logger.WarnNewline("FixMachineCodeByCFF_CSELBlock  with Change Location!!! \n" + block);
             return;
         }
-            
+
+        //it's not end with B but have CSEL
+        var nextBlock = block.GetLinkedBlocks(simulation)[0];
+        Logger.WarnNewline("FixMachineCodeByCFF_CSELBlock  with Change Location2 !!!" +
+                           IsJumpToDispatcher(nextBlock, simulation)
+                           + "next Block is " + nextBlock.start_address);
+        if (simulation.Analyzer.IsDispatcherBlock(nextBlock, simulation))
+        {
+            for (int i = 0; i < block.instructions.Count; i++)
+            {
+                if (i <= index || i==block.instructions.Count-1)
+                {
+                    continue;
+                }
+
+                var item = block.instructions[i];
+                item.address = $"0x{(item.GetAddress() - item.InstructionSize).ToString("X")}";
+                item.fixmachine_byteCode = item.machine_code;
+            }
+
+            block.instructions.Remove(block.CFF_CSEL);
+            block.CFF_CSEL.setAddress(lastIns.GetAddress() - 4);
+            block.instructions.Insert(block.instructions.Count - 1, block.CFF_CSEL);
+            FixCSEL(block, block.CFF_CSEL);
+            Logger.WarnNewline("FixMachineCodeByCFF_CSELBlock  with Change Location2!!! \n" + block);
+            return;
+        }
+
         throw new Exception(" Fix CSEL Not Impl in  " + block.start_address);
     }
 

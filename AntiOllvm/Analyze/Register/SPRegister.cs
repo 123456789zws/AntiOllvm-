@@ -20,6 +20,6 @@ public class SPRegister : RegisterValue
     }
     public long Get(string key)
     {
-        return _spdirect[key];
+        return _spdirect.GetValueOrDefault(key, 0);
     }
 }

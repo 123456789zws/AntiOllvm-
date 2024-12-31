@@ -250,11 +250,7 @@ public static class SmartDispatcherFinderExtension
                             hasCmp = true;
                         }
                     }
-
-                    if (finder.IsCompareRegister(left.registerName))
-                    {
-                        
-                    }
+                   
                     break;
                 case OpCode.B_NE:
                 case OpCode.B_EQ:

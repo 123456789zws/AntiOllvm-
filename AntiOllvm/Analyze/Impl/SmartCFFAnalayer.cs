@@ -16,6 +16,7 @@ public class SmartCffAnalayer : IAnalyze
     }
     public void Init(List<Block> blocks, Simulation simulation)
     {
+        _dispatcherFinder.GetDispatcherOperandRegisterNames().Add("W8");
         _dispatcherFinder.Init(blocks, simulation);
     }
     
@@ -52,6 +53,7 @@ public class SmartCffAnalayer : IAnalyze
 
     public bool IsCSELOperandDispatchRegister(Instruction instruction, Simulation simulation)
     {
+       
         return _dispatcherFinder.IsCselOperandDispatchRegister(instruction, simulation);
     }
 
