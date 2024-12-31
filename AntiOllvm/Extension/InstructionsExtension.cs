@@ -188,6 +188,10 @@ public static class InstructionsExtension
                 {
                     return OpCode.B_GT;
                 }
+                case Arm64ConditionCode.CC:
+                {
+                    return OpCode.B_LT;
+                }
             }
         }
         throw new Exception("CSEL not support " + instruction.Opcode() +" ins "+instruction);
