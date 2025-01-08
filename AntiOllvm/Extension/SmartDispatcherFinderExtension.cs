@@ -161,11 +161,11 @@ public static class SmartDispatcherFinderExtension
                     var leftCmp = instruction.Operands()[0];
                     var rightCmp = instruction.Operands()[1];
                     if (finder.IsCompareRegister(leftCmp.registerName)
-                        && finder.IsCompareRegister(rightCmp.registerName))
+                        &&rightCmp.registerName==curCmpName)
                     {
                         //Get is immediate value
                         var leftValue = simulation.RegContext.GetRegister(leftCmp.registerName).GetLongValue();
-                        if (leftValue != 0 && rightCmp.registerName == curCmpName)
+                        if (leftValue != 0 )
                         {
                             hasCmp = true;
                         }

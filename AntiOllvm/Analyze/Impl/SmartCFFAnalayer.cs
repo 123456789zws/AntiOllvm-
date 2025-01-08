@@ -37,7 +37,8 @@ public class SmartCffAnalayer : IAnalyze
 
 
     public bool IsDispatcherBlock(Block link, Simulation simulation)
-    {   
+    {
+       
         return _dispatcherFinder.IsDispatcherBlock(link,simulation);
     }
 

@@ -61,5 +61,9 @@ public enum OpCode
     TST,
     LDURB,
     STURB,
+    MVN,
+    BIC,
+    BFI,
+    SCVTF,
     NONE,
 }
