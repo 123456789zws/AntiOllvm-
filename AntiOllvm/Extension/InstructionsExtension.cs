@@ -152,7 +152,11 @@ public static class InstructionsExtension
             "TST"   => OpCode.TST,
             "STURB" => OpCode.STURB,
             "LDURB" => OpCode.LDURB,    
-            _ => throw new Exception("Unknown mnemonic: " + mnemonic)
+            "MVN"   => OpCode.MVN,
+            "BFI"   => OpCode.BFI,
+            "BIC"   => OpCode.BIC,
+            "SCVTF"=> OpCode.SCVTF,
+            _ => OpCode.NONE
         };
     }
     public static Arm64ConditionCode GetCSELCompareOpCode( this Instruction instruction)
