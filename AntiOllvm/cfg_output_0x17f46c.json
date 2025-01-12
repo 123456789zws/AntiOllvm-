@@ -1,0 +1,2210 @@
+{
+    "function_start": "0x17f46c",
+    "function_end": "0x17f934",
+    "cfg": [
+        {
+            "start_address": "0x17f46c",
+            "end_address": "0x17f59c",
+            "instructions": [
+                {
+                    "address": "0x17f46c",
+                    "mnemonic": "SUB",
+                    "operands_str": "SP,SP,#0xF0",
+                    "machine_code": "ffc303d1"
+                },
+                {
+                    "address": "0x17f470",
+                    "mnemonic": "STP",
+                    "operands_str": "X28,X27,[SP,#0xF0+var_60]",
+                    "machine_code": "fc6f09a9"
+                },
+                {
+                    "address": "0x17f474",
+                    "mnemonic": "STP",
+                    "operands_str": "X26,X25,[SP,#0xF0+var_50]",
+                    "machine_code": "fa670aa9"
+                },
+                {
+                    "address": "0x17f478",
+                    "mnemonic": "STP",
+                    "operands_str": "X24,X23,[SP,#0xF0+var_40]",
+                    "machine_code": "f85f0ba9"
+                },
+                {
+                    "address": "0x17f47c",
+                    "mnemonic": "STP",
+                    "operands_str": "X22,X21,[SP,#0xF0+var_30]",
+                    "machine_code": "f6570ca9"
+                },
+                {
+                    "address": "0x17f480",
+                    "mnemonic": "STP",
+                    "operands_str": "X20,X19,[SP,#0xF0+var_20]",
+                    "machine_code": "f44f0da9"
+                },
+                {
+                    "address": "0x17f484",
+                    "mnemonic": "STP",
+                    "operands_str": "X29,X30,[SP,#0xF0+var_10]",
+                    "machine_code": "fd7b0ea9"
+                },
+                {
+                    "address": "0x17f488",
+                    "mnemonic": "MRS",
+                    "operands_str": "X8,#3,c13,c0,#2",
+                    "machine_code": "48d03bd5"
+                },
+                {
+                    "address": "0x17f48c",
+                    "mnemonic": "STR",
+                    "operands_str": "X8,[SP,#0xF0+var_E0]",
+                    "machine_code": "e80b00f9"
+                },
+                {
+                    "address": "0x17f490",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[X8,#0x28]",
+                    "machine_code": "081540f9"
+                },
+                {
+                    "address": "0x17f494",
+                    "mnemonic": "ADRP",
+                    "operands_str": "X9,#xmmword_57E745@PAGE",
+                    "machine_code": "e91f00f0"
+                },
+                {
+                    "address": "0x17f498",
+                    "mnemonic": "ADD",
+                    "operands_str": "X10,SP,#0xF0+var_88",
+                    "machine_code": "eaa30191"
+                },
+                {
+                    "address": "0x17f49c",
+                    "mnemonic": "ADD",
+                    "operands_str": "X9,X9,#xmmword_57E745@PAGEOFF",
+                    "machine_code": "29151d91"
+                },
+                {
+                    "address": "0x17f4a0",
+                    "mnemonic": "LDUR",
+                    "operands_str": "Q0,[X9,#0xF]",
+                    "machine_code": "20f1c03c"
+                },
+                {
+                    "address": "0x17f4a4",
+                    "mnemonic": "STR",
+                    "operands_str": "X8,[SP,#0xF0+var_68]",
+                    "machine_code": "e84700f9"
+                },
+                {
+                    "address": "0x17f4a8",
+                    "mnemonic": "STP",
+                    "operands_str": "X0,X10,[SP,#0xF0+var_B8]",
+                    "machine_code": "e0ab03a9"
+                },
+                {
+                    "address": "0x17f4ac",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[SP,#0xF0+var_B0]",
+                    "machine_code": "e82340f9"
+                },
+                {
+                    "address": "0x17f4b0",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[SP,#0xF0+var_B0]",
+                    "machine_code": "e82340f9"
+                },
+                {
+                    "address": "0x17f4b4",
+                    "mnemonic": "LDR",
+                    "operands_str": "Q1,[X9]",
+                    "machine_code": "2101c03d"
+                },
+                {
+                    "address": "0x17f4b8",
+                    "mnemonic": "ADD",
+                    "operands_str": "W9,W1,#1",
+                    "machine_code": "29040011"
+                },
+                {
+                    "address": "0x17f4bc",
+                    "mnemonic": "SXTW",
+                    "operands_str": "X9,W9",
+                    "machine_code": "297d4093"
+                },
+                {
+                    "address": "0x17f4c0",
+                    "mnemonic": "STUR",
+                    "operands_str": "Q0,[X8,#0xF]",
+                    "machine_code": "00f1803c"
+                },
+                {
+                    "address": "0x17f4c4",
+                    "mnemonic": "STR",
+                    "operands_str": "Q1,[X8]",
+                    "machine_code": "0101803d"
+                },
+                {
+                    "address": "0x17f4c8",
+                    "mnemonic": "STR",
+                    "operands_str": "X9,[SP,#0xF0+size]",
+                    "machine_code": "e92700f9"
+                },
+                {
+                    "address": "0x17f4cc",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[SP,#0xF0+size]",
+                    "machine_code": "e82740f9"
+                },
+                {
+                    "address": "0x17f4d0",
+                    "mnemonic": "MOV",
+                    "operands_str": "W19,W1",
+                    "machine_code": "f303012a"
+                },
+                {
+                    "address": "0x17f4d4",
+                    "mnemonic": "MOV",
+                    "operands_str": "X0,X8",
+                    "machine_code": "e00308aa"
+                },
+                {
+                    "address": "0x17f4d8",
+                    "mnemonic": "BL",
+                    "operands_str": ".malloc",
+                    "machine_code": "561efd97"
+                },
+                {
+                    "address": "0x17f4dc",
+                    "mnemonic": "SXTW",
+                    "operands_str": "X8,W19",
+                    "machine_code": "687e4093"
+                },
+                {
+                    "address": "0x17f4e0",
+                    "mnemonic": "STR",
+                    "operands_str": "X19,[SP,#0xF0+var_E8]",
+                    "machine_code": "f30700f9"
+                },
+                {
+                    "address": "0x17f4e4",
+                    "mnemonic": "STR",
+                    "operands_str": "X8,[SP,#0xF0+var_C0]",
+                    "machine_code": "e81b00f9"
+                },
+                {
+                    "address": "0x17f4e8",
+                    "mnemonic": "MOV",
+                    "operands_str": "W13,#0xAB3A",
+                    "machine_code": "4d679552"
+                },
+                {
+                    "address": "0x17f4ec",
+                    "mnemonic": "MOV",
+                    "operands_str": "W28,#0xAB39",
+                    "machine_code": "3c679552"
+                },
+                {
+                    "address": "0x17f4f0",
+                    "mnemonic": "MOV",
+                    "operands_str": "W29,#0xE721",
+                    "machine_code": "3de49c52"
+                },
+                {
+                    "address": "0x17f4f4",
+                    "mnemonic": "MOV",
+                    "operands_str": "W26,#0x13CF",
+                    "machine_code": "fa798252"
+                },
+                {
+                    "address": "0x17f4f8",
+                    "mnemonic": "MOV",
+                    "operands_str": "W20,#0x7B9F",
+                    "machine_code": "f4738f52"
+                },
+                {
+                    "address": "0x17f4fc",
+                    "mnemonic": "MOV",
+                    "operands_str": "W21,#0x2F62",
+                    "machine_code": "55ec8552"
+                },
+                {
+                    "address": "0x17f500",
+                    "mnemonic": "MOV",
+                    "operands_str": "W14,#0x2F63",
+                    "machine_code": "6eec8552"
+                },
+                {
+                    "address": "0x17f504",
+                    "mnemonic": "MOV",
+                    "operands_str": "W24,#0x5589",
+                    "machine_code": "38b18a52"
+                },
+                {
+                    "address": "0x17f508",
+                    "mnemonic": "MOV",
+                    "operands_str": "W22,#0xA01B",
+                    "machine_code": "76039452"
+                },
+                {
+                    "address": "0x17f50c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W15,#0x773E",
+                    "machine_code": "cfe78e52"
+                },
+                {
+                    "address": "0x17f510",
+                    "mnemonic": "MOV",
+                    "operands_str": "W16,#0xB6BD",
+                    "machine_code": "b0d79652"
+                },
+                {
+                    "address": "0x17f514",
+                    "mnemonic": "MOV",
+                    "operands_str": "W17,#0x5BF2",
+                    "machine_code": "517e8b52"
+                },
+                {
+                    "address": "0x17f518",
+                    "mnemonic": "MOV",
+                    "operands_str": "W1,#0x569C",
+                    "machine_code": "81d38a52"
+                },
+                {
+                    "address": "0x17f51c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W2,#0x5CD0",
+                    "machine_code": "029a8b52"
+                },
+                {
+                    "address": "0x17f520",
+                    "mnemonic": "MOV",
+                    "operands_str": "W3,#0x34AB",
+                    "machine_code": "63958652"
+                },
+                {
+                    "address": "0x17f524",
+                    "mnemonic": "MOV",
+                    "operands_str": "W19,#0x8CFD",
+                    "machine_code": "b39f9152"
+                },
+                {
+                    "address": "0x17f528",
+                    "mnemonic": "MOV",
+                    "operands_str": "W4,#0x6034",
+                    "machine_code": "84068c52"
+                },
+                {
+                    "address": "0x17f52c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W5,#0xA01C",
+                    "machine_code": "85039452"
+                },
+                {
+                    "address": "0x17f530",
+                    "mnemonic": "MOV",
+                    "operands_str": "W23,#0x558A",
+                    "machine_code": "57b18a52"
+                },
+                {
+                    "address": "0x17f534",
+                    "mnemonic": "MOV",
+                    "operands_str": "W25,#0x953",
+                    "machine_code": "792a8152"
+                },
+                {
+                    "address": "0x17f538",
+                    "mnemonic": "MOV",
+                    "operands_str": "W27,#0x4A6A",
+                    "machine_code": "5b4d8952"
+                },
+                {
+                    "address": "0x17f53c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W10,#0xAB3A",
+                    "machine_code": "4a679552"
+                },
+                {
+                    "address": "0x17f540",
+                    "mnemonic": "STR",
+                    "operands_str": "X0,[SP,#0xF0+var_A0]",
+                    "machine_code": "e02b00f9"
+                },
+                {
+                    "address": "0x17f544",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W13,#0xE76F,LSL#16",
+                    "machine_code": "ededbc72"
+                },
+                {
+                    "address": "0x17f548",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W28,#0xE76F,LSL#16",
+                    "machine_code": "fcedbc72"
+                },
+                {
+                    "address": "0x17f54c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W29,#0x8614,LSL#16",
+                    "machine_code": "9dc2b072"
+                },
+                {
+                    "address": "0x17f550",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W26,#0x91FA,LSL#16",
+                    "machine_code": "5a3fb272"
+                },
+                {
+                    "address": "0x17f554",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W20,#0xCE6E,LSL#16",
+                    "machine_code": "d4cdb972"
+                },
+                {
+                    "address": "0x17f558",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W21,#0x5938,LSL#16",
+                    "machine_code": "1527ab72"
+                },
+                {
+                    "address": "0x17f55c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W14,#0x5938,LSL#16",
+                    "machine_code": "0e27ab72"
+                },
+                {
+                    "address": "0x17f560",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W24,#0x43E7,LSL#16",
+                    "machine_code": "f87ca872"
+                },
+                {
+                    "address": "0x17f564",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W22,#0x4F55,LSL#16",
+                    "machine_code": "b6eaa972"
+                },
+                {
+                    "address": "0x17f568",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W15,#0xBCC5,LSL#16",
+                    "machine_code": "af98b772"
+                },
+                {
+                    "address": "0x17f56c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W16,#0xD34D,LSL#16",
+                    "machine_code": "b069ba72"
+                },
+                {
+                    "address": "0x17f570",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W17,#0xF23F,LSL#16",
+                    "machine_code": "f147be72"
+                },
+                {
+                    "address": "0x17f574",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W1,#0x67DE,LSL#16",
+                    "machine_code": "c1fbac72"
+                },
+                {
+                    "address": "0x17f578",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W2,#0x90E,LSL#16",
+                    "machine_code": "c221a172"
+                },
+                {
+                    "address": "0x17f57c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W3,#0x2C22,LSL#16",
+                    "machine_code": "4384a572"
+                },
+                {
+                    "address": "0x17f580",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W19,#0x5F54,LSL#16",
+                    "machine_code": "93eaab72"
+                },
+                {
+                    "address": "0x17f584",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W4,#0x5714,LSL#16",
+                    "machine_code": "84e2aa72"
+                },
+                {
+                    "address": "0x17f588",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W5,#0x4F55,LSL#16",
+                    "machine_code": "a5eaa972"
+                },
+                {
+                    "address": "0x17f58c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W23,#0x43E7,LSL#16",
+                    "machine_code": "f77ca872"
+                },
+                {
+                    "address": "0x17f590",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W25,#0x5382,LSL#16",
+                    "machine_code": "5970aa72"
+                },
+                {
+                    "address": "0x17f594",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W27,#0x5604,LSL#16",
+                    "machine_code": "9bc0aa72"
+                },
+                {
+                    "address": "0x17f598",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W10,#0xE76F,LSL#16",
+                    "machine_code": "eaedbc72"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f59c"
+            ]
+        },
+        {
+            "start_address": "0x17f59c",
+            "end_address": "0x17f5a4",
+            "instructions": [
+                {
+                    "address": "0x17f59c",
+                    "mnemonic": "CMP",
+                    "operands_str": "W10,W28",
+                    "machine_code": "5f011c6b"
+                },
+                {
+                    "address": "0x17f5a0",
+                    "mnemonic": "B.LE",
+                    "operands_str": "loc_17F6B4",
+                    "machine_code": "ad080054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5a4",
+                "0x17f6b4"
+            ]
+        },
+        {
+            "start_address": "0x17f5a4",
+            "end_address": "0x17f5ac",
+            "instructions": [
+                {
+                    "address": "0x17f5a4",
+                    "mnemonic": "CMP",
+                    "operands_str": "W10,W21",
+                    "machine_code": "5f01156b"
+                },
+                {
+                    "address": "0x17f5a8",
+                    "mnemonic": "B.GT",
+                    "operands_str": "loc_17F714",
+                    "machine_code": "6c0b0054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5ac",
+                "0x17f714"
+            ]
+        },
+        {
+            "start_address": "0x17f5ac",
+            "end_address": "0x17f5b4",
+            "instructions": [
+                {
+                    "address": "0x17f5ac",
+                    "mnemonic": "CMP",
+                    "operands_str": "W10,W13",
+                    "machine_code": "5f010d6b"
+                },
+                {
+                    "address": "0x17f5b0",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F738",
+                    "machine_code": "400c0054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5b4",
+                "0x17f738"
+            ]
+        },
+        {
+            "start_address": "0x17f5b4",
+            "end_address": "0x17f5c4",
+            "instructions": [
+                {
+                    "address": "0x17f5b4",
+                    "mnemonic": "MOV",
+                    "operands_str": "W11,#0xEFF1B6F8",
+                    "machine_code": "0bdf96522bfebd72"
+                },
+                {
+                    "address": "0x17f5bc",
+                    "mnemonic": "CMP",
+                    "operands_str": "W10,W11",
+                    "machine_code": "5f010b6b"
+                },
+                {
+                    "address": "0x17f5c0",
+                    "mnemonic": "B.NE",
+                    "operands_str": "loc_17F59C",
+                    "machine_code": "e1feff54"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f59c",
+                "0x17f5c4"
+            ]
+        },
+        {
+            "start_address": "0x17f5c4",
+            "end_address": "0x17f5e0",
+            "instructions": [
+                {
+                    "address": "0x17f5c4",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[SP,#0xF0+var_A0]",
+                    "machine_code": "e82b40f9"
+                },
+                {
+                    "address": "0x17f5c8",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[SP,#0xF0+size]",
+                    "machine_code": "e82740f9"
+                },
+                {
+                    "address": "0x17f5cc",
+                    "mnemonic": "STR",
+                    "operands_str": "X8,[SP,#0xF0+dest]",
+                    "machine_code": "e81300f9"
+                },
+                {
+                    "address": "0x17f5d0",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[SP,#0xF0+var_A0]",
+                    "machine_code": "e82b40f9"
+                },
+                {
+                    "address": "0x17f5d4",
+                    "mnemonic": "STR",
+                    "operands_str": "X8,[SP,#0xF0+var_D8]",
+                    "machine_code": "e80f00f9"
+                },
+                {
+                    "address": "0x17f5d8",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0x56044A6A",
+                    "machine_code": "484d895288c0aa72"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5e0"
+            ]
+        },
+        {
+            "start_address": "0x17f5e0",
+            "end_address": "0x17f5e8",
+            "instructions": [
+                {
+                    "address": "0x17f5e0",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W24",
+                    "machine_code": "1f01186b"
+                },
+                {
+                    "address": "0x17f5e4",
+                    "mnemonic": "B.GT",
+                    "operands_str": "loc_17F61C",
+                    "machine_code": "cc010054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5e8",
+                "0x17f61c"
+            ]
+        },
+        {
+            "start_address": "0x17f5e8",
+            "end_address": "0x17f5f8",
+            "instructions": [
+                {
+                    "address": "0x17f5e8",
+                    "mnemonic": "MOV",
+                    "operands_str": "W9,#0x90A6161B",
+                    "machine_code": "69c38252c914b272"
+                },
+                {
+                    "address": "0x17f5f0",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W9",
+                    "machine_code": "1f01096b"
+                },
+                {
+                    "address": "0x17f5f4",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F6A8",
+                    "machine_code": "a0050054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5f8",
+                "0x17f6a8"
+            ]
+        },
+        {
+            "start_address": "0x17f5f8",
+            "end_address": "0x17f608",
+            "instructions": [
+                {
+                    "address": "0x17f5f8",
+                    "mnemonic": "MOV",
+                    "operands_str": "W9,#0x94998527",
+                    "machine_code": "e9a490522993b272"
+                },
+                {
+                    "address": "0x17f600",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W9",
+                    "machine_code": "1f01096b"
+                },
+                {
+                    "address": "0x17f604",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F640",
+                    "machine_code": "e0010054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f608",
+                "0x17f640"
+            ]
+        },
+        {
+            "start_address": "0x17f608",
+            "end_address": "0x17f618",
+            "instructions": [
+                {
+                    "address": "0x17f608",
+                    "mnemonic": "MOV",
+                    "operands_str": "W9,#0x4189E29C",
+                    "machine_code": "89539c522931a872"
+                },
+                {
+                    "address": "0x17f610",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W9",
+                    "machine_code": "1f01096b"
+                },
+                {
+                    "address": "0x17f614",
+                    "mnemonic": "B.NE",
+                    "operands_str": "loc_17F5E0",
+                    "machine_code": "61feff54"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5e0",
+                "0x17f618"
+            ]
+        },
+        {
+            "start_address": "0x17f618",
+            "end_address": "0x17f61c",
+            "instructions": [
+                {
+                    "address": "0x17f618",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F780",
+                    "machine_code": "5a000014"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f780"
+            ]
+        },
+        {
+            "start_address": "0x17f61c",
+            "end_address": "0x17f624",
+            "instructions": [
+                {
+                    "address": "0x17f61c",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W23",
+                    "machine_code": "1f01176b"
+                },
+                {
+                    "address": "0x17f620",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F640",
+                    "machine_code": "00010054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f624",
+                "0x17f640"
+            ]
+        },
+        {
+            "start_address": "0x17f624",
+            "end_address": "0x17f62c",
+            "instructions": [
+                {
+                    "address": "0x17f624",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W25",
+                    "machine_code": "1f01196b"
+                },
+                {
+                    "address": "0x17f628",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F634",
+                    "machine_code": "60000054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f62c",
+                "0x17f634"
+            ]
+        },
+        {
+            "start_address": "0x17f62c",
+            "end_address": "0x17f634",
+            "instructions": [
+                {
+                    "address": "0x17f62c",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W27",
+                    "machine_code": "1f011b6b"
+                },
+                {
+                    "address": "0x17f630",
+                    "mnemonic": "B.NE",
+                    "operands_str": "loc_17F5E0",
+                    "machine_code": "81fdff54"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5e0",
+                "0x17f634"
+            ]
+        },
+        {
+            "start_address": "0x17f634",
+            "end_address": "0x17f640",
+            "instructions": [
+                {
+                    "address": "0x17f634",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0x43E7558A",
+                    "machine_code": "48b18a52e87ca872"
+                },
+                {
+                    "address": "0x17f63c",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F5E0",
+                    "machine_code": "e9ffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5e0"
+            ]
+        },
+        {
+            "start_address": "0x17f640",
+            "end_address": "0x17f6a8",
+            "instructions": [
+                {
+                    "address": "0x17f640",
+                    "mnemonic": "LDP",
+                    "operands_str": "X0,X2,[SP,#0xF0+var_D8]",
+                    "machine_code": "e08b41a9"
+                },
+                {
+                    "address": "0x17f644",
+                    "mnemonic": "MOV",
+                    "operands_str": "W1,WZR",
+                    "machine_code": "e1031f2a"
+                },
+                {
+                    "address": "0x17f648",
+                    "mnemonic": "BL",
+                    "operands_str": ".memset",
+                    "machine_code": "b21bfd97"
+                },
+                {
+                    "address": "0x17f64c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W5,#0xA01C",
+                    "machine_code": "85039452"
+                },
+                {
+                    "address": "0x17f650",
+                    "mnemonic": "MOV",
+                    "operands_str": "W4,#0x6034",
+                    "machine_code": "84068c52"
+                },
+                {
+                    "address": "0x17f654",
+                    "mnemonic": "MOV",
+                    "operands_str": "W3,#0x34AB",
+                    "machine_code": "63958652"
+                },
+                {
+                    "address": "0x17f658",
+                    "mnemonic": "MOV",
+                    "operands_str": "W2,#0x5CD0",
+                    "machine_code": "029a8b52"
+                },
+                {
+                    "address": "0x17f65c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W1,#0x569C",
+                    "machine_code": "81d38a52"
+                },
+                {
+                    "address": "0x17f660",
+                    "mnemonic": "MOV",
+                    "operands_str": "W17,#0x5BF2",
+                    "machine_code": "517e8b52"
+                },
+                {
+                    "address": "0x17f664",
+                    "mnemonic": "MOV",
+                    "operands_str": "W16,#0xB6BD",
+                    "machine_code": "b0d79652"
+                },
+                {
+                    "address": "0x17f668",
+                    "mnemonic": "MOV",
+                    "operands_str": "W15,#0x773E",
+                    "machine_code": "cfe78e52"
+                },
+                {
+                    "address": "0x17f66c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W14,#0x2F63",
+                    "machine_code": "6eec8552"
+                },
+                {
+                    "address": "0x17f670",
+                    "mnemonic": "MOV",
+                    "operands_str": "W13,#0xAB3A",
+                    "machine_code": "4d679552"
+                },
+                {
+                    "address": "0x17f674",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0xE29C",
+                    "machine_code": "88539c52"
+                },
+                {
+                    "address": "0x17f678",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W5,#0x4F55,LSL#16",
+                    "machine_code": "a5eaa972"
+                },
+                {
+                    "address": "0x17f67c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W4,#0x5714,LSL#16",
+                    "machine_code": "84e2aa72"
+                },
+                {
+                    "address": "0x17f680",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W3,#0x2C22,LSL#16",
+                    "machine_code": "4384a572"
+                },
+                {
+                    "address": "0x17f684",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W2,#0x90E,LSL#16",
+                    "machine_code": "c221a172"
+                },
+                {
+                    "address": "0x17f688",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W1,#0x67DE,LSL#16",
+                    "machine_code": "c1fbac72"
+                },
+                {
+                    "address": "0x17f68c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W17,#0xF23F,LSL#16",
+                    "machine_code": "f147be72"
+                },
+                {
+                    "address": "0x17f690",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W16,#0xD34D,LSL#16",
+                    "machine_code": "b069ba72"
+                },
+                {
+                    "address": "0x17f694",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W15,#0xBCC5,LSL#16",
+                    "machine_code": "af98b772"
+                },
+                {
+                    "address": "0x17f698",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W14,#0x5938,LSL#16",
+                    "machine_code": "0e27ab72"
+                },
+                {
+                    "address": "0x17f69c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W13,#0xE76F,LSL#16",
+                    "machine_code": "ededbc72"
+                },
+                {
+                    "address": "0x17f6a0",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W8,#0x4189,LSL#16",
+                    "machine_code": "2831a872"
+                },
+                {
+                    "address": "0x17f6a4",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F5E0",
+                    "machine_code": "cfffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5e0"
+            ]
+        },
+        {
+            "start_address": "0x17f6a8",
+            "end_address": "0x17f6b4",
+            "instructions": [
+                {
+                    "address": "0x17f6a8",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0x94998527",
+                    "machine_code": "e8a490522893b272"
+                },
+                {
+                    "address": "0x17f6b0",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F5E0",
+                    "machine_code": "ccffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f5e0"
+            ]
+        },
+        {
+            "start_address": "0x17f6b4",
+            "end_address": "0x17f6bc",
+            "instructions": [
+                {
+                    "address": "0x17f6b4",
+                    "mnemonic": "CMP",
+                    "operands_str": "W10,W29",
+                    "machine_code": "5f011d6b"
+                },
+                {
+                    "address": "0x17f6b8",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F8F4",
+                    "machine_code": "e0110054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f6bc",
+                "0x17f8f4"
+            ]
+        },
+        {
+            "start_address": "0x17f6bc",
+            "end_address": "0x17f6c4",
+            "instructions": [
+                {
+                    "address": "0x17f6bc",
+                    "mnemonic": "CMP",
+                    "operands_str": "W10,W26",
+                    "machine_code": "5f011a6b"
+                },
+                {
+                    "address": "0x17f6c0",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F760",
+                    "machine_code": "00050054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f6c4",
+                "0x17f760"
+            ]
+        },
+        {
+            "start_address": "0x17f6c4",
+            "end_address": "0x17f6cc",
+            "instructions": [
+                {
+                    "address": "0x17f6c4",
+                    "mnemonic": "CMP",
+                    "operands_str": "W10,W20",
+                    "machine_code": "5f01146b"
+                },
+                {
+                    "address": "0x17f6c8",
+                    "mnemonic": "B.NE",
+                    "operands_str": "loc_17F59C",
+                    "machine_code": "a1f6ff54"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f59c",
+                "0x17f6cc"
+            ]
+        },
+        {
+            "start_address": "0x17f6cc",
+            "end_address": "0x17f714",
+            "instructions": [
+                {
+                    "address": "0x17f6cc",
+                    "mnemonic": "LDRSW",
+                    "operands_str": "X8,[SP,#0xF0+var_90]",
+                    "machine_code": "e86380b9"
+                },
+                {
+                    "address": "0x17f6d0",
+                    "mnemonic": "LDR",
+                    "operands_str": "X9,[SP,#0xF0+var_A0]",
+                    "machine_code": "e92b40f9"
+                },
+                {
+                    "address": "0x17f6d4",
+                    "mnemonic": "ADD",
+                    "operands_str": "X12,SP,#0xF0+var_88",
+                    "machine_code": "eca30191"
+                },
+                {
+                    "address": "0x17f6d8",
+                    "mnemonic": "LDRB",
+                    "operands_str": "W10,[X9,X8]",
+                    "machine_code": "2a696838"
+                },
+                {
+                    "address": "0x17f6dc",
+                    "mnemonic": "LDRSW",
+                    "operands_str": "X11,[SP,#0xF0+var_8C]",
+                    "machine_code": "eb6780b9"
+                },
+                {
+                    "address": "0x17f6e0",
+                    "mnemonic": "LDRB",
+                    "operands_str": "W11,[X12,X11]",
+                    "machine_code": "8b696b38"
+                },
+                {
+                    "address": "0x17f6e4",
+                    "mnemonic": "EOR",
+                    "operands_str": "W10,W10,W11",
+                    "machine_code": "4a010b4a"
+                },
+                {
+                    "address": "0x17f6e8",
+                    "mnemonic": "STRB",
+                    "operands_str": "W10,[X9,X8]",
+                    "machine_code": "2a692838"
+                },
+                {
+                    "address": "0x17f6ec",
+                    "mnemonic": "LDR",
+                    "operands_str": "W8,[SP,#0xF0+var_8C]",
+                    "machine_code": "e86740b9"
+                },
+                {
+                    "address": "0x17f6f0",
+                    "mnemonic": "LDR",
+                    "operands_str": "W9,[SP,#0xF0+var_94]",
+                    "machine_code": "e95f40b9"
+                },
+                {
+                    "address": "0x17f6f4",
+                    "mnemonic": "LDR",
+                    "operands_str": "W10,[SP,#0xF0+var_90]",
+                    "machine_code": "ea6340b9"
+                },
+                {
+                    "address": "0x17f6f8",
+                    "mnemonic": "ADD",
+                    "operands_str": "W11,W8,#1",
+                    "machine_code": "0b050011"
+                },
+                {
+                    "address": "0x17f6fc",
+                    "mnemonic": "SDIV",
+                    "operands_str": "W12,W11,W9",
+                    "machine_code": "6c0dc91a"
+                },
+                {
+                    "address": "0x17f700",
+                    "mnemonic": "ADD",
+                    "operands_str": "W8,W10,#1",
+                    "machine_code": "48050011"
+                },
+                {
+                    "address": "0x17f704",
+                    "mnemonic": "MOV",
+                    "operands_str": "W10,#0x13CF",
+                    "machine_code": "ea798252"
+                },
+                {
+                    "address": "0x17f708",
+                    "mnemonic": "MSUB",
+                    "operands_str": "W9,W12,W9,W11",
+                    "machine_code": "89ad091b"
+                },
+                {
+                    "address": "0x17f70c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W10,#0x91FA,LSL#16",
+                    "machine_code": "4a3fb272"
+                },
+                {
+                    "address": "0x17f710",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F59C",
+                    "machine_code": "a3ffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f59c"
+            ]
+        },
+        {
+            "start_address": "0x17f714",
+            "end_address": "0x17f71c",
+            "instructions": [
+                {
+                    "address": "0x17f714",
+                    "mnemonic": "CMP",
+                    "operands_str": "W10,W14",
+                    "machine_code": "5f010e6b"
+                },
+                {
+                    "address": "0x17f718",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F750",
+                    "machine_code": "c0010054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f71c",
+                "0x17f750"
+            ]
+        },
+        {
+            "start_address": "0x17f71c",
+            "end_address": "0x17f72c",
+            "instructions": [
+                {
+                    "address": "0x17f71c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W11,#0x6128B9BB",
+                    "machine_code": "6b3797520b25ac72"
+                },
+                {
+                    "address": "0x17f724",
+                    "mnemonic": "CMP",
+                    "operands_str": "W10,W11",
+                    "machine_code": "5f010b6b"
+                },
+                {
+                    "address": "0x17f728",
+                    "mnemonic": "B.NE",
+                    "operands_str": "loc_17F59C",
+                    "machine_code": "a1f3ff54"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f59c",
+                "0x17f72c"
+            ]
+        },
+        {
+            "start_address": "0x17f72c",
+            "end_address": "0x17f738",
+            "instructions": [
+                {
+                    "address": "0x17f72c",
+                    "mnemonic": "LDR",
+                    "operands_str": "X10,[SP,#0xF0+var_A0]",
+                    "machine_code": "ea2b40f9"
+                },
+                {
+                    "address": "0x17f730",
+                    "mnemonic": "STR",
+                    "operands_str": "X10,[SP,#0xF0+var_C8]",
+                    "machine_code": "ea1700f9"
+                },
+                {
+                    "address": "0x17f734",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F754",
+                    "machine_code": "08000014"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f754"
+            ]
+        },
+        {
+            "start_address": "0x17f738",
+            "end_address": "0x17f750",
+            "instructions": [
+                {
+                    "address": "0x17f738",
+                    "mnemonic": "LDR",
+                    "operands_str": "X10,[SP,#0xF0+var_A0]",
+                    "machine_code": "ea2b40f9"
+                },
+                {
+                    "address": "0x17f73c",
+                    "mnemonic": "CMP",
+                    "operands_str": "X10,#0",
+                    "machine_code": "5f0100f1"
+                },
+                {
+                    "address": "0x17f740",
+                    "mnemonic": "MOV",
+                    "operands_str": "W10,#0xEFF1B6F8",
+                    "machine_code": "0adf96522afebd72"
+                },
+                {
+                    "address": "0x17f748",
+                    "mnemonic": "CSEL",
+                    "operands_str": "W10,W14,W10,EQ",
+                    "machine_code": "ca018a1a"
+                },
+                {
+                    "address": "0x17f74c",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F59C",
+                    "machine_code": "94ffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f59c"
+            ]
+        },
+        {
+            "start_address": "0x17f750",
+            "end_address": "0x17f754",
+            "instructions": [
+                {
+                    "address": "0x17f750",
+                    "mnemonic": "STR",
+                    "operands_str": "XZR,[SP,#0xF0+var_C8]",
+                    "machine_code": "ff1700f9"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f754"
+            ]
+        },
+        {
+            "start_address": "0x17f754",
+            "end_address": "0x17f760",
+            "instructions": [
+                {
+                    "address": "0x17f754",
+                    "mnemonic": "MOV",
+                    "operands_str": "W10,#0x8614E721",
+                    "machine_code": "2ae49c528ac2b072"
+                },
+                {
+                    "address": "0x17f75c",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F59C",
+                    "machine_code": "90ffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f59c"
+            ]
+        },
+        {
+            "start_address": "0x17f760",
+            "end_address": "0x17f780",
+            "instructions": [
+                {
+                    "address": "0x17f760",
+                    "mnemonic": "STP",
+                    "operands_str": "W8,W9,[SP,#0xF0+var_90]",
+                    "machine_code": "e8270c29"
+                },
+                {
+                    "address": "0x17f764",
+                    "mnemonic": "LDR",
+                    "operands_str": "W10,[SP,#0xF0+var_90]",
+                    "machine_code": "ea6340b9"
+                },
+                {
+                    "address": "0x17f768",
+                    "mnemonic": "LDR",
+                    "operands_str": "X11,[SP,#0xF0+var_E8]",
+                    "machine_code": "eb0740f9"
+                },
+                {
+                    "address": "0x17f76c",
+                    "mnemonic": "CMP",
+                    "operands_str": "W10,W11",
+                    "machine_code": "5f010b6b"
+                },
+                {
+                    "address": "0x17f770",
+                    "mnemonic": "MOV",
+                    "operands_str": "W10,#0x6128B9BB",
+                    "machine_code": "6a3797520a25ac72"
+                },
+                {
+                    "address": "0x17f778",
+                    "mnemonic": "CSEL",
+                    "operands_str": "W10,W20,W10,LT",
+                    "machine_code": "8ab28a1a"
+                },
+                {
+                    "address": "0x17f77c",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F59C",
+                    "machine_code": "88ffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f59c"
+            ]
+        },
+        {
+            "start_address": "0x17f780",
+            "end_address": "0x17f790",
+            "instructions": [
+                {
+                    "address": "0x17f780",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[SP,#0xF0+var_A0]",
+                    "machine_code": "e82b40f9"
+                },
+                {
+                    "address": "0x17f784",
+                    "mnemonic": "STR",
+                    "operands_str": "X8,[SP,#0xF0+dest]",
+                    "machine_code": "e81300f9"
+                },
+                {
+                    "address": "0x17f788",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0x2C2234AB",
+                    "machine_code": "689586524884a572"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f790"
+            ]
+        },
+        {
+            "start_address": "0x17f790",
+            "end_address": "0x17f798",
+            "instructions": [
+                {
+                    "address": "0x17f790",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W22",
+                    "machine_code": "1f01166b"
+                },
+                {
+                    "address": "0x17f794",
+                    "mnemonic": "B.GT",
+                    "operands_str": "loc_17F7BC",
+                    "machine_code": "4c010054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f798",
+                "0x17f7bc"
+            ]
+        },
+        {
+            "start_address": "0x17f798",
+            "end_address": "0x17f7a0",
+            "instructions": [
+                {
+                    "address": "0x17f798",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W15",
+                    "machine_code": "1f010f6b"
+                },
+                {
+                    "address": "0x17f79c",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F848",
+                    "machine_code": "60050054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f7a0",
+                "0x17f848"
+            ]
+        },
+        {
+            "start_address": "0x17f7a0",
+            "end_address": "0x17f7a8",
+            "instructions": [
+                {
+                    "address": "0x17f7a0",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W2",
+                    "machine_code": "1f01026b"
+                },
+                {
+                    "address": "0x17f7a4",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F7B0",
+                    "machine_code": "60000054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f7a8",
+                "0x17f7b0"
+            ]
+        },
+        {
+            "start_address": "0x17f7a8",
+            "end_address": "0x17f7b0",
+            "instructions": [
+                {
+                    "address": "0x17f7a8",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W3",
+                    "machine_code": "1f01036b"
+                },
+                {
+                    "address": "0x17f7ac",
+                    "mnemonic": "B.NE",
+                    "operands_str": "loc_17F790",
+                    "machine_code": "21ffff54"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f790",
+                "0x17f7b0"
+            ]
+        },
+        {
+            "start_address": "0x17f7b0",
+            "end_address": "0x17f7bc",
+            "instructions": [
+                {
+                    "address": "0x17f7b0",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0x5F548CFD",
+                    "machine_code": "a89f915288eaab72"
+                },
+                {
+                    "address": "0x17f7b8",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F790",
+                    "machine_code": "f6ffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f790"
+            ]
+        },
+        {
+            "start_address": "0x17f7bc",
+            "end_address": "0x17f7c4",
+            "instructions": [
+                {
+                    "address": "0x17f7bc",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W19",
+                    "machine_code": "1f01136b"
+                },
+                {
+                    "address": "0x17f7c0",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F7E0",
+                    "machine_code": "00010054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f7c4",
+                "0x17f7e0"
+            ]
+        },
+        {
+            "start_address": "0x17f7c4",
+            "end_address": "0x17f7cc",
+            "instructions": [
+                {
+                    "address": "0x17f7c4",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W4",
+                    "machine_code": "1f01046b"
+                },
+                {
+                    "address": "0x17f7c8",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F7E0",
+                    "machine_code": "c0000054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f7cc",
+                "0x17f7e0"
+            ]
+        },
+        {
+            "start_address": "0x17f7cc",
+            "end_address": "0x17f7d4",
+            "instructions": [
+                {
+                    "address": "0x17f7cc",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W5",
+                    "machine_code": "1f01056b"
+                },
+                {
+                    "address": "0x17f7d0",
+                    "mnemonic": "B.NE",
+                    "operands_str": "loc_17F790",
+                    "machine_code": "01feff54"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f790",
+                "0x17f7d4"
+            ]
+        },
+        {
+            "start_address": "0x17f7d4",
+            "end_address": "0x17f7e0",
+            "instructions": [
+                {
+                    "address": "0x17f7d4",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0x57146034",
+                    "machine_code": "88068c5288e2aa72"
+                },
+                {
+                    "address": "0x17f7dc",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F790",
+                    "machine_code": "edffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f790"
+            ]
+        },
+        {
+            "start_address": "0x17f7e0",
+            "end_address": "0x17f848",
+            "instructions": [
+                {
+                    "address": "0x17f7e0",
+                    "mnemonic": "LDR",
+                    "operands_str": "X0,[SP,#0xF0+dest]",
+                    "machine_code": "e01340f9"
+                },
+                {
+                    "address": "0x17f7e4",
+                    "mnemonic": "LDP",
+                    "operands_str": "X2,X1,[SP,#0xF0+var_C0]",
+                    "machine_code": "e20743a9"
+                },
+                {
+                    "address": "0x17f7e8",
+                    "mnemonic": "BL",
+                    "operands_str": ".memcpy",
+                    "machine_code": "0219fd97"
+                },
+                {
+                    "address": "0x17f7ec",
+                    "mnemonic": "MOV",
+                    "operands_str": "W5,#0xA01C",
+                    "machine_code": "85039452"
+                },
+                {
+                    "address": "0x17f7f0",
+                    "mnemonic": "MOV",
+                    "operands_str": "W4,#0x6034",
+                    "machine_code": "84068c52"
+                },
+                {
+                    "address": "0x17f7f4",
+                    "mnemonic": "MOV",
+                    "operands_str": "W3,#0x34AB",
+                    "machine_code": "63958652"
+                },
+                {
+                    "address": "0x17f7f8",
+                    "mnemonic": "MOV",
+                    "operands_str": "W2,#0x5CD0",
+                    "machine_code": "029a8b52"
+                },
+                {
+                    "address": "0x17f7fc",
+                    "mnemonic": "MOV",
+                    "operands_str": "W1,#0x569C",
+                    "machine_code": "81d38a52"
+                },
+                {
+                    "address": "0x17f800",
+                    "mnemonic": "MOV",
+                    "operands_str": "W17,#0x5BF2",
+                    "machine_code": "517e8b52"
+                },
+                {
+                    "address": "0x17f804",
+                    "mnemonic": "MOV",
+                    "operands_str": "W16,#0xB6BD",
+                    "machine_code": "b0d79652"
+                },
+                {
+                    "address": "0x17f808",
+                    "mnemonic": "MOV",
+                    "operands_str": "W15,#0x773E",
+                    "machine_code": "cfe78e52"
+                },
+                {
+                    "address": "0x17f80c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W14,#0x2F63",
+                    "machine_code": "6eec8552"
+                },
+                {
+                    "address": "0x17f810",
+                    "mnemonic": "MOV",
+                    "operands_str": "W13,#0xAB3A",
+                    "machine_code": "4d679552"
+                },
+                {
+                    "address": "0x17f814",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0x773E",
+                    "machine_code": "c8e78e52"
+                },
+                {
+                    "address": "0x17f818",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W5,#0x4F55,LSL#16",
+                    "machine_code": "a5eaa972"
+                },
+                {
+                    "address": "0x17f81c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W4,#0x5714,LSL#16",
+                    "machine_code": "84e2aa72"
+                },
+                {
+                    "address": "0x17f820",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W3,#0x2C22,LSL#16",
+                    "machine_code": "4384a572"
+                },
+                {
+                    "address": "0x17f824",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W2,#0x90E,LSL#16",
+                    "machine_code": "c221a172"
+                },
+                {
+                    "address": "0x17f828",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W1,#0x67DE,LSL#16",
+                    "machine_code": "c1fbac72"
+                },
+                {
+                    "address": "0x17f82c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W17,#0xF23F,LSL#16",
+                    "machine_code": "f147be72"
+                },
+                {
+                    "address": "0x17f830",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W16,#0xD34D,LSL#16",
+                    "machine_code": "b069ba72"
+                },
+                {
+                    "address": "0x17f834",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W15,#0xBCC5,LSL#16",
+                    "machine_code": "af98b772"
+                },
+                {
+                    "address": "0x17f838",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W14,#0x5938,LSL#16",
+                    "machine_code": "0e27ab72"
+                },
+                {
+                    "address": "0x17f83c",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W13,#0xE76F,LSL#16",
+                    "machine_code": "ededbc72"
+                },
+                {
+                    "address": "0x17f840",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W8,#0xBCC5,LSL#16",
+                    "machine_code": "a898b772"
+                },
+                {
+                    "address": "0x17f844",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F790",
+                    "machine_code": "d3ffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f790"
+            ]
+        },
+        {
+            "start_address": "0x17f848",
+            "end_address": "0x17f850",
+            "instructions": [
+                {
+                    "address": "0x17f848",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0x67DE569C",
+                    "machine_code": "88d38a52c8fbac72"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f850"
+            ]
+        },
+        {
+            "start_address": "0x17f850",
+            "end_address": "0x17f858",
+            "instructions": [
+                {
+                    "address": "0x17f850",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W16",
+                    "machine_code": "1f01106b"
+                },
+                {
+                    "address": "0x17f854",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F874",
+                    "machine_code": "00010054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f858",
+                "0x17f874"
+            ]
+        },
+        {
+            "start_address": "0x17f858",
+            "end_address": "0x17f860",
+            "instructions": [
+                {
+                    "address": "0x17f858",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W17",
+                    "machine_code": "1f01116b"
+                },
+                {
+                    "address": "0x17f85c",
+                    "mnemonic": "B.EQ",
+                    "operands_str": "loc_17F8DC",
+                    "machine_code": "00040054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f860",
+                "0x17f8dc"
+            ]
+        },
+        {
+            "start_address": "0x17f860",
+            "end_address": "0x17f868",
+            "instructions": [
+                {
+                    "address": "0x17f860",
+                    "mnemonic": "CMP",
+                    "operands_str": "W8,W1",
+                    "machine_code": "1f01016b"
+                },
+                {
+                    "address": "0x17f864",
+                    "mnemonic": "B.NE",
+                    "operands_str": "loc_17F850",
+                    "machine_code": "61ffff54"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f850",
+                "0x17f868"
+            ]
+        },
+        {
+            "start_address": "0x17f868",
+            "end_address": "0x17f874",
+            "instructions": [
+                {
+                    "address": "0x17f868",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0xD34DB6BD",
+                    "machine_code": "a8d79652a869ba72"
+                },
+                {
+                    "address": "0x17f870",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F850",
+                    "machine_code": "f8ffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f850"
+            ]
+        },
+        {
+            "start_address": "0x17f874",
+            "end_address": "0x17f8dc",
+            "instructions": [
+                {
+                    "address": "0x17f874",
+                    "mnemonic": "ADD",
+                    "operands_str": "X0,SP,#0xF0+var_88",
+                    "machine_code": "e0a30191"
+                },
+                {
+                    "address": "0x17f878",
+                    "mnemonic": "MOV",
+                    "operands_str": "W1,#0x1F",
+                    "machine_code": "e1038052"
+                },
+                {
+                    "address": "0x17f87c",
+                    "mnemonic": "BL",
+                    "operands_str": ".__strlen_chk",
+                    "machine_code": "bd1afd97"
+                },
+                {
+                    "address": "0x17f880",
+                    "mnemonic": "MOV",
+                    "operands_str": "W5,#0xA01C",
+                    "machine_code": "85039452"
+                },
+                {
+                    "address": "0x17f884",
+                    "mnemonic": "MOV",
+                    "operands_str": "W4,#0x6034",
+                    "machine_code": "84068c52"
+                },
+                {
+                    "address": "0x17f888",
+                    "mnemonic": "MOV",
+                    "operands_str": "W3,#0x34AB",
+                    "machine_code": "63958652"
+                },
+                {
+                    "address": "0x17f88c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W2,#0x5CD0",
+                    "machine_code": "029a8b52"
+                },
+                {
+                    "address": "0x17f890",
+                    "mnemonic": "MOV",
+                    "operands_str": "W1,#0x569C",
+                    "machine_code": "81d38a52"
+                },
+                {
+                    "address": "0x17f894",
+                    "mnemonic": "MOV",
+                    "operands_str": "W17,#0x5BF2",
+                    "machine_code": "517e8b52"
+                },
+                {
+                    "address": "0x17f898",
+                    "mnemonic": "MOV",
+                    "operands_str": "W16,#0xB6BD",
+                    "machine_code": "b0d79652"
+                },
+                {
+                    "address": "0x17f89c",
+                    "mnemonic": "MOV",
+                    "operands_str": "W15,#0x773E",
+                    "machine_code": "cfe78e52"
+                },
+                {
+                    "address": "0x17f8a0",
+                    "mnemonic": "MOV",
+                    "operands_str": "W14,#0x2F63",
+                    "machine_code": "6eec8552"
+                },
+                {
+                    "address": "0x17f8a4",
+                    "mnemonic": "MOV",
+                    "operands_str": "W13,#0xAB3A",
+                    "machine_code": "4d679552"
+                },
+                {
+                    "address": "0x17f8a8",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,#0x5BF2",
+                    "machine_code": "487e8b52"
+                },
+                {
+                    "address": "0x17f8ac",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W5,#0x4F55,LSL#16",
+                    "machine_code": "a5eaa972"
+                },
+                {
+                    "address": "0x17f8b0",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W4,#0x5714,LSL#16",
+                    "machine_code": "84e2aa72"
+                },
+                {
+                    "address": "0x17f8b4",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W3,#0x2C22,LSL#16",
+                    "machine_code": "4384a572"
+                },
+                {
+                    "address": "0x17f8b8",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W2,#0x90E,LSL#16",
+                    "machine_code": "c221a172"
+                },
+                {
+                    "address": "0x17f8bc",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W1,#0x67DE,LSL#16",
+                    "machine_code": "c1fbac72"
+                },
+                {
+                    "address": "0x17f8c0",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W17,#0xF23F,LSL#16",
+                    "machine_code": "f147be72"
+                },
+                {
+                    "address": "0x17f8c4",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W16,#0xD34D,LSL#16",
+                    "machine_code": "b069ba72"
+                },
+                {
+                    "address": "0x17f8c8",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W15,#0xBCC5,LSL#16",
+                    "machine_code": "af98b772"
+                },
+                {
+                    "address": "0x17f8cc",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W14,#0x5938,LSL#16",
+                    "machine_code": "0e27ab72"
+                },
+                {
+                    "address": "0x17f8d0",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W13,#0xE76F,LSL#16",
+                    "machine_code": "ededbc72"
+                },
+                {
+                    "address": "0x17f8d4",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W8,#0xF23F,LSL#16",
+                    "machine_code": "e847be72"
+                },
+                {
+                    "address": "0x17f8d8",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F850",
+                    "machine_code": "deffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f850"
+            ]
+        },
+        {
+            "start_address": "0x17f8dc",
+            "end_address": "0x17f8f4",
+            "instructions": [
+                {
+                    "address": "0x17f8dc",
+                    "mnemonic": "MOV",
+                    "operands_str": "W10,#0x13CF",
+                    "machine_code": "ea798252"
+                },
+                {
+                    "address": "0x17f8e0",
+                    "mnemonic": "MOV",
+                    "operands_str": "W8,WZR",
+                    "machine_code": "e8031f2a"
+                },
+                {
+                    "address": "0x17f8e4",
+                    "mnemonic": "MOV",
+                    "operands_str": "W9,WZR",
+                    "machine_code": "e9031f2a"
+                },
+                {
+                    "address": "0x17f8e8",
+                    "mnemonic": "STR",
+                    "operands_str": "W0,[SP,#0xF0+var_94]",
+                    "machine_code": "e05f00b9"
+                },
+                {
+                    "address": "0x17f8ec",
+                    "mnemonic": "MOVK",
+                    "operands_str": "W10,#0x91FA,LSL#16",
+                    "machine_code": "4a3fb272"
+                },
+                {
+                    "address": "0x17f8f0",
+                    "mnemonic": "B",
+                    "operands_str": "loc_17F59C",
+                    "machine_code": "2bffff17"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f59c"
+            ]
+        },
+        {
+            "start_address": "0x17f8f4",
+            "end_address": "0x17f90c",
+            "instructions": [
+                {
+                    "address": "0x17f8f4",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[SP,#0xF0+var_B0]",
+                    "machine_code": "e82340f9"
+                },
+                {
+                    "address": "0x17f8f8",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[SP,#0xF0+var_E0]",
+                    "machine_code": "e80b40f9"
+                },
+                {
+                    "address": "0x17f8fc",
+                    "mnemonic": "LDR",
+                    "operands_str": "X8,[X8,#0x28]",
+                    "machine_code": "081540f9"
+                },
+                {
+                    "address": "0x17f900",
+                    "mnemonic": "LDR",
+                    "operands_str": "X9,[SP,#0xF0+var_68]",
+                    "machine_code": "e94740f9"
+                },
+                {
+                    "address": "0x17f904",
+                    "mnemonic": "CMP",
+                    "operands_str": "X8,X9",
+                    "machine_code": "1f0109eb"
+                },
+                {
+                    "address": "0x17f908",
+                    "mnemonic": "B.NE",
+                    "operands_str": "loc_17F930",
+                    "machine_code": "41010054"
+                }
+            ],
+            "linkBlocks": [
+                "0x17f90c",
+                "0x17f930"
+            ]
+        },
+        {
+            "start_address": "0x17f90c",
+            "end_address": "0x17f930",
+            "instructions": [
+                {
+                    "address": "0x17f90c",
+                    "mnemonic": "LDR",
+                    "operands_str": "X0,[SP,#0xF0+var_C8]",
+                    "machine_code": "e01740f9"
+                },
+                {
+                    "address": "0x17f910",
+                    "mnemonic": "LDP",
+                    "operands_str": "X29,X30,[SP,#0xF0+var_10]",
+                    "machine_code": "fd7b4ea9"
+                },
+                {
+                    "address": "0x17f914",
+                    "mnemonic": "LDP",
+                    "operands_str": "X20,X19,[SP,#0xF0+var_20]",
+                    "machine_code": "f44f4da9"
+                },
+                {
+                    "address": "0x17f918",
+                    "mnemonic": "LDP",
+                    "operands_str": "X22,X21,[SP,#0xF0+var_30]",
+                    "machine_code": "f6574ca9"
+                },
+                {
+                    "address": "0x17f91c",
+                    "mnemonic": "LDP",
+                    "operands_str": "X24,X23,[SP,#0xF0+var_40]",
+                    "machine_code": "f85f4ba9"
+                },
+                {
+                    "address": "0x17f920",
+                    "mnemonic": "LDP",
+                    "operands_str": "X26,X25,[SP,#0xF0+var_50]",
+                    "machine_code": "fa674aa9"
+                },
+                {
+                    "address": "0x17f924",
+                    "mnemonic": "LDP",
+                    "operands_str": "X28,X27,[SP,#0xF0+var_60]",
+                    "machine_code": "fc6f49a9"
+                },
+                {
+                    "address": "0x17f928",
+                    "mnemonic": "ADD",
+                    "operands_str": "SP,SP,#0xF0",
+                    "machine_code": "ffc30391"
+                },
+                {
+                    "address": "0x17f92c",
+                    "mnemonic": "RET",
+                    "operands_str": "X30",
+                    "machine_code": "c0035fd6"
+                }
+            ],
+            "linkBlocks": []
+        },
+        {
+            "start_address": "0x17f930",
+            "end_address": "0x17f934",
+            "instructions": [
+                {
+                    "address": "0x17f930",
+                    "mnemonic": "BL",
+                    "operands_str": ".__stack_chk_fail",
+                    "machine_code": "0c1dfd97"
+                }
+            ],
+            "linkBlocks": []
+        }
+    ]
+}

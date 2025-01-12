@@ -12,17 +12,34 @@ public class Instruction
     public string mnemonic { get; set; }
     public string operands_str { get; set; }
     public string machine_code { get; set; }
-    
+
     public string fixmachine_code { get; set; }
     public string fixmachine_byteCode { get; set; }
-    
-    
+
+
+    public void SetFixMachineCode(string fixMachineCode)
+    {
+        if (string.IsNullOrEmpty(fixmachine_code))
+        {
+            fixmachine_code = fixMachineCode;
+        }
+        else
+        {
+            //Check is same ? 
+            if (fixmachine_code != fixMachineCode)
+            {
+                throw new Exception("Fix machine code is not same it's error result");
+            }
+        }
+    }
+
     public int InstructionSize => GetInstructionSize();
-    
+
     private int GetInstructionSize()
     {
         return machine_code.Length / 2;
     }
+
     public long GetAddress()
     {
         return Convert.ToInt64(address.Replace("0x", ""), 16);
@@ -52,11 +69,41 @@ public class Instruction
             return cachedOperands;
         }
 
-        string[] operands = operandsStr.Split(',');
-        Operand[] result = new Operand[operands.Length];
-        for (int i = 0; i < operands.Length; i++)
+        Operand[] result;
+        //Fix Memory Operand
+        if (operandsStr.Contains("[") && operandsStr.Contains("]"))
         {
-            result[i] = ParserOperand(operands[i]);
+            //提取[]的内容  
+            var s = operands_str.Substring(operands_str.IndexOf("[", StringComparison.Ordinal),
+                operands_str.IndexOf("]", StringComparison.Ordinal) - operands_str.IndexOf("[", StringComparison.Ordinal) + 1);
+            var newStr = operands_str.Replace(s, "");
+            int count = newStr.Count(c => c == ',');
+            if (count>1)
+            {
+                if (newStr.EndsWith(","))
+                {
+                    newStr = newStr.Substring(0, newStr.Length - 1);
+                }
+            }
+            string[] operands = newStr.Split(',');
+            result = new Operand[operands.Length + 1];
+            for (int i = 0; i < operands.Length; i++)
+            {
+                result[i] = ParserOperand(operands[i]);
+                if (i + 1 == operands.Length)
+                {
+                    result[i] = ParserOperand(s);
+                }
+            }
+        }
+        else
+        {
+            string[] operands = operandsStr.Split(',');
+            result = new Operand[operands.Length];
+            for (int i = 0; i < operands.Length; i++)
+            {
+                result[i] = ParserOperand(operands[i]);
+            }
         }
 
         _isParsed = true;
@@ -110,11 +157,26 @@ public class Instruction
         {
             operand.kind = Arm64OperandKind.VectorRegisterElement;
         }
-
-
-        else if (operand_str.StartsWith("[") && operand_str.EndsWith("]"))
+        else if (IsMemory(operand_str))
         {
             operand.kind = Arm64OperandKind.Memory;
+            if (operand_str.Contains(","))
+            {
+                var args = operand_str.Replace("[", "").Replace("]", "").Split(",");
+                operand.memoryOperand = new MemoryOperand
+                {
+                    registerName = args[0],
+                    addend = args[1]
+                };
+            }
+            else
+            {
+                operand.memoryOperand = new MemoryOperand
+                {
+                    registerName = operand_str.Replace("[", "").Replace("]", ""),
+                    addend = "0"
+                };
+            }
         }
         else if (operand_str.StartsWith("loc_"))
         {
@@ -190,14 +252,20 @@ public class Instruction
         return $"{mnemonic} {operands_str}";
     }
 
+
     public static Instruction CreateNOP(string address)
     {
-        Instruction ins= new();
+        Instruction ins = new();
         ins.address = address;
         ins.mnemonic = "NOP";
         ins.operands_str = "";
         ins.machine_code = "D503201F";
-        ins.fixmachine_code = "NOP";
+        ins.SetFixMachineCode("NOP");
         return ins;
+    }
+
+    public void setAddress(long getAddress)
+    {
+        address = "0x" + getAddress.ToString("X");
     }
 }

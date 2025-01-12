@@ -56,7 +56,7 @@ public class ConditionJumpHelper
             case OpCode.B_GT:
             {
                 //有符号比较
-                Logger.InfoNewline($" B.GT   {leftReg} : {leftV}  > {rightReg} : {rightV}");
+                Logger.InfoNewline($" B.GT   {leftReg} : {leftV} ({leftV:X})  > {rightReg} : {rightV} ({rightV:X})");
                 if (leftV > rightV)
                 {
                     return true;

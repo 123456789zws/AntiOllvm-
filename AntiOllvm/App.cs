@@ -1,6 +1,5 @@
 ﻿using AntiOllvm.Analyze;
-using AntiOllvm.Analyze.Type;
-using AntiOllvm.Helper;
+using AntiOllvm.Analyze.Impl;
 using AntiOllvm.Logging;
 
 namespace AntiOllvm;
@@ -11,7 +10,7 @@ public class App
     {
         if (config == null)
         {
-            Logger.ErrorNewline("config is null");
+            Logger.RedNewline("config is null");
             return;
         }
 
@@ -20,7 +19,7 @@ public class App
         
       
         Simulation simulation = new(readAllText, config.fix_outpath);
-        simulation.SetAnalyze(new CFFAnalyer());
+        simulation.SetAnalyze(new SmartCffAnalayer(config));
         simulation.Run();
     }
 }

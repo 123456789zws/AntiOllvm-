@@ -5,8 +5,8 @@ namespace AntiOllvm;
 public class RegisterContext
 {
     private readonly List<Register> _registers = new();
-    
-    private Dictionary<string,List<Register>> _registerSnapshot = new();
+
+    private Dictionary<string, List<Register>> _registerSnapshot = new();
     private bool N;
     private bool Z;
     private bool C;
@@ -16,12 +16,12 @@ public class RegisterContext
     {
         for (int i = 0; i < 31; i++)
         {
-            _registers.Add(new Register { name = "X" + i, value = 0 });
+            _registers.Add(new Register { name = "X" + i, value = new Immediate(0) });
         }
 
-        _registers.Add(new Register { name = "SP", value = 0 });
-        
+        _registers.Add(new Register { name = "SP", value = new SPRegister() });
     }
+
     public void RestoreRegisters(string key)
     {
         if (_registerSnapshot.ContainsKey(key))
@@ -35,9 +35,9 @@ public class RegisterContext
         else
         {
             throw new Exception(" Register snapshot not found");
-
         }
     }
+
     public bool SnapshotRegisters(string key)
     {
         var snapshot = new List<Register>();
@@ -47,13 +47,15 @@ public class RegisterContext
         }
 
         if (_registerSnapshot.ContainsKey(key))
-        {   
-            throw   new Exception("Register snapshot already exists");
+        {
+            throw new Exception("Register snapshot already exists");
             return false;
         }
+
         _registerSnapshot.Add(key, snapshot);
         return true;
     }
+
     public void LogRegisters()
     {
         foreach (var register in _registers)
@@ -61,19 +63,25 @@ public class RegisterContext
             Logger.InfoNewline(register.name + " = " + register.GetLongValue().ToString("X"));
         }
     }
-    
-    public void SetRegister(string name, object value)
+
+    public void SetRegister(string name, RegisterValue value)
     {
-        long v = (long)value;
         // Logger.InfoNewline("SetRegister  " + name + " = " + v.ToString("X"));
         name = name.Replace("W", "X");
-        GetRegister(name).value = value;
-        
+        var reg = GetRegister(name);
+        if (value is Immediate immediate)
+        {
+            reg.SetLongValue(immediate.Value);
+            return;
+        }
+
+        throw new Exception(" value is not Immediate");
     }
+
     public Register GetRegister(string name)
     {
         name = name.Replace("W", "X");
-        return _registers.Find(register => register.name == name) ?? throw new Exception("Register not found");
+        return _registers.Find(register => register.name == name) ?? throw new Exception("Register not found " + name);
     }
 
     private bool IsWRegister(string operand_str)
@@ -85,24 +93,24 @@ public class RegisterContext
     {
         long left = 0x186363ed;
         long right = 0xfa639493;
-       
+
         // 将无符号操作数转换为有符号整数，以便进行有符号比较
         int signedLeft = unchecked((int)left);
         int signedRight = unchecked((int)right);
         int signedResult = signedLeft - signedRight;
 
         // 设置N（Negative）标志位：结果为负
-      bool  N = signedResult < 0;
+        bool N = signedResult < 0;
 
         // 设置Z（Zero）标志位：结果为零
-      bool  Z = (left == right);
+        bool Z = (left == right);
 
         // 设置C（Carry）标志位：无借位（即左操作数 >= 右操作数，无符号比较）
-      bool  C = left >= right;
+        bool C = left >= right;
 
         // 设置V（Overflow）标志位：有符号溢出
-      bool  V = ((signedLeft < 0 && signedRight > 0 && signedResult > 0) ||
-             (signedLeft > 0 && signedRight < 0 && signedResult < 0));
+        bool V = ((signedLeft < 0 && signedRight > 0 && signedResult > 0) ||
+                  (signedLeft > 0 && signedRight < 0 && signedResult < 0));
 
         // 记录比较过程和结果
         Logger.InfoNewline($"Comparing left (0x{left:X8}) with right (0x{right:X8})");
@@ -111,8 +119,8 @@ public class RegisterContext
         Logger.InfoNewline($"Z = {Z}");
         Logger.InfoNewline($"C = {C}");
         Logger.InfoNewline($"V = {V}");
-        
     }
+
     /**
      * Compare two registers and set flags
      */
@@ -120,6 +128,7 @@ public class RegisterContext
     {
         long left = GetRegister(leftRegisterName).GetLongValue();
         long right = GetRegister(rightRegisterName).GetLongValue();
+        
         // Logger.InfoNewline("Comparing " + leftRegisterName + " = " + left +"(0x"+left.ToString("X")+")"+ " with " + rightRegisterName + " = " + right + "(0x"+right.ToString("X")+ ")");
         var result = left - right;
         N = result < 0;
@@ -138,5 +147,10 @@ public class RegisterContext
             V = ((left < 0 && right > 0 && result > 0) ||
                  (left > 0 && right < 0 && result < 0)); // Overflow flag
         }
+    }
+
+    public SPRegister GetSpRegister()
+    {
+        return (_registers.Find(register => register.name == "SP")!.value as SPRegister)!;
     }
 }

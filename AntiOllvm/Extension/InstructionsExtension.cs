@@ -1,4 +1,5 @@
-﻿using AntiOllvm.entity;
+﻿using AntiOllvm.Analyze;
+using AntiOllvm.entity;
 using AntiOllvm.Logging;
 
 namespace AntiOllvm.Extension;
@@ -34,6 +35,10 @@ public static class InstructionsExtension
             {
                 return "B.NE";
             }
+            case OpCode.B_GT:
+            {
+                return "B.GT";
+            }
         }
         throw new Exception(" FormatOpcode not support " + opCode);
     }
@@ -43,6 +48,15 @@ public static class InstructionsExtension
         var mainDispatchAddress = mainDispatch.GetStartAddress();
         var jumpAddress = instruction.GetRelativeAddress();
         if (jumpAddress == mainDispatchAddress)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    public static bool HasConditionJump(this Instruction instruction)
+    {
+        if (instruction.mnemonic.StartsWith("B."))
         {
             return true;
         }
@@ -77,13 +91,17 @@ public static class InstructionsExtension
         }
 
         return mnemonic switch
-        {
+        {   
+           
+            "ADC" => OpCode.ADC,
+            "ADCS"=> OpCode.ADCS,
             "ADRL" => OpCode.ADRL,
             "ADRP" => OpCode.ADRP,
             "LDP" => OpCode.LDP,
             "MOV" => OpCode.MOV,
             "MOVK" => OpCode.MOVK,
             "CMP" => OpCode.CMP,
+            "B.LT" => OpCode.B_LT,
             "B.LE" => OpCode.B_LE,
             "B.GT" => OpCode.B_GT,
             "B.EQ" => OpCode.B_EQ,
@@ -116,7 +134,29 @@ public static class InstructionsExtension
             "NOP"   => OpCode.NOP,
             "CMN"   => OpCode.CMN,
             "SUBS" => OpCode.SUBS,
-            _ => throw new Exception("Unknown mnemonic: " + mnemonic)
+            "MULT" => OpCode.MULT,
+            "BLR"   => OpCode.BLR,
+            "ORR"  => OpCode.ORR,
+            "MUL"   => OpCode.MUL,
+            "LSR"   => OpCode.LSR,
+            "ASR"   => OpCode.ASR,
+            "EON"   => OpCode.EON,
+            "LSL"   => OpCode.LSL,
+            "CBNZ"  => OpCode.CBNZ,
+            "CSINC" => OpCode.CSINC,
+            "MADD"  => OpCode.MADD,
+            "TBNZ"  => OpCode.TBNZ,
+            "CCMP"  => OpCode.CCMP,
+            "ADDS"  => OpCode.ADDS,
+            "CSET"  => OpCode.CSET,
+            "TST"   => OpCode.TST,
+            "STURB" => OpCode.STURB,
+            "LDURB" => OpCode.LDURB,    
+            "MVN"   => OpCode.MVN,
+            "BFI"   => OpCode.BFI,
+            "BIC"   => OpCode.BIC,
+            "SCVTF"=> OpCode.SCVTF,
+            _ => OpCode.NONE
         };
     }
     public static Arm64ConditionCode GetCSELCompareOpCode( this Instruction instruction)
@@ -148,9 +188,24 @@ public static class InstructionsExtension
                 {
                     return OpCode.B_NE;
                 }
+                case Arm64ConditionCode.GT:
+                {
+                    return OpCode.B_GT;
+                }
+                case Arm64ConditionCode.CC:
+                {
+                    return OpCode.B_LT;
+                }
             }
         }
         throw new Exception("CSEL not support " + instruction.Opcode() +" ins "+instruction);
-    
+    }
+
+  
+    public static bool IsJumpToDispatcher(this Instruction instruction,Simulation simulation)
+    {
+        if (instruction.Opcode() != OpCode.B) return false;
+        var block = simulation.FindBlockByAddress(instruction.GetRelativeAddress());
+        return simulation.IsDispatcherBlock(block);
     }
 }
